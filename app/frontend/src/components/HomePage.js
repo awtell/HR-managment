@@ -28,6 +28,10 @@ function HomePage() {
     setSelectedUser(user);
   };
 
+  const handleCloseDetails = () => {
+    setSelectedUser(null);
+  };
+
   return (
     <>
       <NavBar toggleFormVisibility={toggleFormVisibility} />
@@ -38,6 +42,7 @@ function HomePage() {
         {selectedUser && (
           <div className="user-details">
             <div className="selected-user-details">
+              <button className="close-button" onClick={handleCloseDetails}>×</button>
               <h2>{selectedUser.fName} {selectedUser.lName}</h2>
               <p>Address: {selectedUser.address}</p>
               <p>Company: {selectedUser.company}</p>

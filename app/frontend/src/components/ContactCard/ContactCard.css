@@ -15,14 +15,14 @@
   border-radius: 10px;
   overflow: hidden;
   margin: 10px;
-  width: calc(33.33% - 20px); /* Default to three columns */
+  width: calc(33.33% - 20px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
   box-sizing: border-box;
 }
 
 .homepage-container.user-selected .contact-card-container .card {
-  width: calc(50% - 20px); /* Switch to two columns when user selected */
+  width: calc(50% - 20px);
 }
 
 .card:hover {
@@ -58,7 +58,16 @@
 
 /* Media Query for Mobile Devices */
 @media (max-width: 767px) {
-  .card {
-    width: 100%;
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+  .row .card {
+    flex: 0 0 100%; /* Makes the card take up the full width */
+    max-width: 100%; /* Ensures the card does not exceed its container's width */
+    margin-bottom: 20px; /* Adds some space between cards */
+  }
+  .contact-form {
+    order: -1; /* This moves the form above all other elements */
   }
 }

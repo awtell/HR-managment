@@ -84,15 +84,10 @@ const Form = ({ formVisible, toggleFormVisibility }) => {
   }, [formVisible, toggleFormVisibility]);
 
   if (!formVisible) return null;
-  const handleClose = () => {
-    toggleFormVisibility();
-  };
+
   return (
     <div className="form-container">
-      <button className="close-button" onClick={toggleFormVisibility}>×</button>
       <form onSubmit={handleSubmit}>
-      <button className="close-btn" onClick={handleClose}>Close</button>
-
         <div className="input-group mb-3">
           <input type="text" className="form-control" placeholder="First Name" name="fName" value={formData.fName} onChange={handleChange} required />
         </div>
@@ -124,11 +119,13 @@ const Form = ({ formVisible, toggleFormVisibility }) => {
         <div className="input-group mb-3">
           <input type="text" className="form-control" placeholder="Phone" name="phone" value={formData.phone} onChange={handleChange} required />
         </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
-        <button type="button" className="btn btn-secondary" onClick={toggleFormVisibility}>Cancel</button>
+        <div className="btn-container">
+          <button type="submit" className="btn btn-primary">Submit</button>
+          <button type="button" className="btn btn-secondary" onClick={toggleFormVisibility}>Cancel</button>
+        </div>
       </form>
     </div>
   );
 };
 
-export default Form;
+export default Form;  
