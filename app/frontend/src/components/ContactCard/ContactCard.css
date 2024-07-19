@@ -1,0 +1,64 @@
+.container {
+  width: 100%;
+  max-width: none;
+}
+
+.contact-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px;
+  width: calc(33.33% - 20px); /* Default to three columns */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+.homepage-container.user-selected .contact-card-container .card {
+  width: calc(50% - 20px); /* Switch to two columns when user selected */
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.profile-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card-body {
+  padding: 15px;
+  text-align: center;
+}
+
+.card-title {
+  font-size: 1.25em;
+  margin: 0.5em 0;
+}
+
+.card-text {
+  font-size: 1em;
+  color: #777;
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 767px) {
+  .card {
+    width: 100%;
+  }
+}
