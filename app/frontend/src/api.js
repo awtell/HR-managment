@@ -35,6 +35,25 @@ const postUser = async (user) => {
     }
 };
 
+const deleteUser = async (id) => {
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/user/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return await response.json();
+    }
+    catch (error) {
+        console.error('Delete error:', error);
+        throw error;
+    }
+};
+
 export {
-    fetchUsers, postUser
+    fetchUsers, postUser, deleteUser
 };

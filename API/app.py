@@ -86,5 +86,20 @@ def handle_user():
         return jsonify(result)
 
 
+@app.route('/user/<id>', methods=['DELETE'])
+def delete_user(id):
+    logging.debug("Received DELETE request")
+    user = Users.query.get(id)
+    if not user:
+        logging.error("User not found")
+        return jsonify({"error": "User not found"}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+
+    logging.debug("User deleted successfully")
+    return user_schema.jsonify(user)
+
+
 if __name__ == '__main__':
     app.run(debug=True)

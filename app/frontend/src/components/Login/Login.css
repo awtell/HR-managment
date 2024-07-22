@@ -1,0 +1,55 @@
+/* Login.css */
+
+/* Container for the login form */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    background-color: #f0f2f5; /* Light grey background */
+  }
+  
+  /* Styles for the login form */
+  form {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background-color: #ffffff; /* White background */
+    max-width: 400px; /* Max form width */
+    width: 100%; /* Full width */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Styles for input fields */
+  input[type="text"],
+  input[type="password"] {
+    width: 100%; /* Full width */
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 4px; /* Rounded borders */
+  }
+  
+  /* Styles for the login button */
+  button[type="submit"] {
+    width: 100%; /* Full width */
+    padding: 10px;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    border: none;
+    border-radius: 4px; /* Rounded borders */
+    cursor: pointer;
+    margin-top: 10px; /* Adds margin on top for spacing */
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  
+  /* Heading style */
+  h2 {
+    color: #333; /* Dark grey color */
+    margin-bottom: 20px; /* Adds margin below the heading */
+  }
