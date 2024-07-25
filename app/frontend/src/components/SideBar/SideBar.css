@@ -1,39 +1,45 @@
 .sidebar {
-    width: 200px;
-    position: fixed;
-    left: 0;
-    top: 70px;
-    bottom: 0;
-    background-color: #f4f4f4;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  
-  .sidebar h3 {
-    margin-top: 0;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar ul li {
-    margin-bottom: 10px;
-  }
-  
-  .sidebar ul li label {
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .sidebar ul li input[type="checkbox"] {
-    margin-right: 10px;
-  }
-  
-  .company-name {
-    margin-left: 10px;
-  }
+  width: 200px;
+  position: fixed;
+  left: 0;
+  top: 70px;
+  bottom: 0;
+  background-color: #ffffff;
+  padding: 20px;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+}
 
-  
+.sidebar h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 15px;
+}
+
+.sidebar ul li label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  color: #0066cc;
+  font-size: 16px;
+}
+
+.sidebar ul li input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.company-name {
+  margin-left: 10px;
+}

@@ -86,7 +86,7 @@ function HomePage() {
   const companies = useMemo(() => extractCompanies(users), [users, extractCompanies]);
 
   const handleCompanyClick = (company) => { // New function to handle company click
-    setSelectedCompany(company);
+    setSelectedCompany(prevCompany => (prevCompany === company ? null : company));
   };
 
   const filteredUsers = useMemo(() => { // Filter users based on selected company
@@ -96,7 +96,7 @@ function HomePage() {
   return (
     <>
       <NavBar toggleFormVisibility={toggleFormVisibility} />
-      <Sidebar companies={companies} onCompanyClick={handleCompanyClick} /> {/* Pass the handleCompanyClick function */}
+      <Sidebar companies={companies} onCompanyClick={handleCompanyClick} selectedCompany={selectedCompany} /> {/* Pass the handleCompanyClick function */}
       <div className={`homepage-container ${selectedUser ? 'user-selected' : ''}`}>
         <div className="contact-cards">
           <ContactCard users={filteredUsers} onCardClick={handleCardClick} /> {/* Use filteredUsers */}
