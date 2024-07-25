@@ -15,9 +15,10 @@ function HomePage() {
   const [userToDelete, setUserToDelete] = useState(null);
   const [showMore, setShowMore] = useState(false);
   const [hasMoreUsers, setHasMoreUsers] = useState(true);
+  const [selectedCompany, setSelectedCompany] = useState(null); // New state for selected company
 
   useEffect(() => {
-    fetchUsers(9) // Fetch only 9 users initially
+    fetchUsers(9)
       .then(data => {
         setUsers(data);
         setVisibleUsers(data.slice(0, 9));
@@ -28,13 +29,13 @@ function HomePage() {
 
   useEffect(() => {
     if (showMore) {
-      fetchUsers(visibleUsers.length + 9)
+      fetchUsers(visibleUsers.length + 6)
         .then(data => {
           if (data.length <= visibleUsers.length) {
             setHasMoreUsers(false);
           } else {
             setUsers(data);
-            setVisibleUsers(data.slice(0, visibleUsers.length + 9));
+            setVisibleUsers(data.slice(0, visibleUsers.length + 6));
           }
         })
         .catch(error => console.error('Error fetching users:', error))
@@ -61,8 +62,9 @@ function HomePage() {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await deleteUser(userToDelete);
+      await deleteUser(userToDelete);
       setUsers(prevUsers => prevUsers.filter(user => user.id !== userToDelete));
+      setVisibleUsers(prevVisibleUsers => prevVisibleUsers.filter(user => user.id !== userToDelete));
     } catch (error) {
       console.error('Error deleting user:', error);
     } finally {
@@ -83,16 +85,26 @@ function HomePage() {
 
   const companies = useMemo(() => extractCompanies(users), [users, extractCompanies]);
 
+  const handleCompanyClick = (company) => { // New function to handle company click
+    setSelectedCompany(company);
+  };
+
+  const filteredUsers = useMemo(() => { // Filter users based on selected company
+    return selectedCompany ? users.filter(user => user.company === selectedCompany) : visibleUsers;
+  }, [selectedCompany, users, visibleUsers]);
+
   return (
     <>
       <NavBar toggleFormVisibility={toggleFormVisibility} />
-      <Sidebar companies={companies} />
+      <Sidebar companies={companies} onCompanyClick={handleCompanyClick} /> {/* Pass the handleCompanyClick function */}
       <div className={`homepage-container ${selectedUser ? 'user-selected' : ''}`}>
         <div className="contact-cards">
-          <ContactCard users={visibleUsers} onCardClick={handleCardClick} />
-          <div className="show-more-button">
-            <button className="btn" onClick={() => setShowMore(true)} disabled={!hasMoreUsers}>Show More</button>
-          </div>
+          <ContactCard users={filteredUsers} onCardClick={handleCardClick} /> {/* Use filteredUsers */}
+          {hasMoreUsers && (
+            <div className="show-more-button">
+              <button className="btn" onClick={() => setShowMore(true)}>Show More</button>
+            </div>
+          )}
         </div>
         {selectedUser && (
           <div className="user-details">
