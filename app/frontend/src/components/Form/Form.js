@@ -12,6 +12,7 @@ const Form = ({ formVisible, toggleFormVisibility }) => {
     country: '',
     color: '#000000',
     phone: '',
+    password: '',
   });
 
   const handleChange = (e) => {
@@ -20,22 +21,10 @@ const Form = ({ formVisible, toggleFormVisibility }) => {
       ...prevData,
       [name]: value,
     }));
-
-    if (name === 'country') {
-      const selectedCountry = countries.find((country) => country.name.common === value);
-      if (selectedCountry && selectedCountry.idd && selectedCountry.idd.root) {
-        const callingCode = selectedCountry.idd.root + (selectedCountry.idd.suffixes[0] || '');
-        setFormData((prevData) => ({
-          ...prevData,
-          phone: callingCode,
-        }));
-      }
-    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
     try {
       await postUser(formData);
       alert('User created successfully');
@@ -52,13 +41,7 @@ const Form = ({ formVisible, toggleFormVisibility }) => {
       try {
         const response = await fetch('https://restcountries.com/v3.1/all');
         const data = await response.json();
-        const sortedCountries = data.sort((a, b) => a.name.common.localeCompare(b.name.common));
-        const lebanonIndex = sortedCountries.findIndex(country => country.name.common === 'Lebanon');
-        if (lebanonIndex !== -1) {
-          const lebanon = sortedCountries.splice(lebanonIndex, 1)[0];
-          sortedCountries.unshift(lebanon);
-        }
-        setCountries(sortedCountries);
+        setCountries(data.sort((a, b) => a.name.common.localeCompare(b.name.common)));
       } catch (error) {
         console.error('Error fetching countries:', error);
       }
@@ -67,26 +50,11 @@ const Form = ({ formVisible, toggleFormVisibility }) => {
     fetchCountries();
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        toggleFormVisibility();
-      }
-    };
-
-    if (formVisible) {
-      document.addEventListener('keydown', handleKeyDown);
-    } else {
-      document.removeEventListener('keydown', handleKeyDown);
-    }
-
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [formVisible, toggleFormVisibility]);
-
   if (!formVisible) return null;
 
   return (
     <div className="form-container">
+      <h2>Registration Form</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group mb-3">
           <input type="text" className="form-control" placeholder="First Name" name="fName" value={formData.fName} onChange={handleChange} required />
@@ -119,6 +87,9 @@ const Form = ({ formVisible, toggleFormVisibility }) => {
         <div className="input-group mb-3">
           <input type="text" className="form-control" placeholder="Phone" name="phone" value={formData.phone} onChange={handleChange} required />
         </div>
+        <div className="input-group mb-3">
+          <input type="password" className="form-control" placeholder="Password" name="password" value={formData.password} onChange={handleChange} required />
+        </div>
         <div className="btn-container">
           <button type="submit" className="btn btn-primary">Submit</button>
           <button type="button" className="btn btn-secondary" onClick={toggleFormVisibility}>Cancel</button>
@@ -128,4 +99,4 @@ const Form = ({ formVisible, toggleFormVisibility }) => {
   );
 };
 
-export default Form;  
+export default Form;

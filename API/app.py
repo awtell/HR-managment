@@ -29,8 +29,9 @@ class Users(db.Model):
     country = db.Column(db.String(50))
     color = db.Column(db.String(50))
     phone = db.Column(db.String(50))
+    password = db.Column(db.String(50))
 
-    def __init__(self, fName, lName, company, address, city, country, color, phone):
+    def __init__(self, fName, lName, company, address, city, country, color, phone, password):
         self.fName = fName
         self.lName = lName
         self.company = company
@@ -39,12 +40,13 @@ class Users(db.Model):
         self.country = country
         self.color = color
         self.phone = phone
+        self.password = password
 
 
 class UsersSchema(ma.Schema):
     class Meta:
         fields = ('id', 'fName', 'lName', 'company', 'address',
-                  'city', 'country', 'color', 'phone')
+                  'city', 'country', 'color', 'phone', 'password')
 
 
 user_schema = UsersSchema()
@@ -65,13 +67,14 @@ def handle_user():
         country = data.get('country')
         color = data.get('color')
         phone = data.get('phone')
+        password = data.get('password')
 
-        if not all([fName, lName, company, address, city, country, color, phone]):
+        if not all([fName, lName, company, address, city, country, color, phone, password]):
             logging.error("Missing data in the request")
             return jsonify({"error": "Missing data"}), 400
 
         new_user = Users(fName, lName, company, address,
-                         city, country, color, phone)
+                         city, country, color, phone, password)
 
         db.session.add(new_user)
         db.session.commit()
@@ -102,4 +105,6 @@ def delete_user(id):
 
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

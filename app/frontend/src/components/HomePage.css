@@ -2,7 +2,6 @@
   display: flex;
   flex-wrap: nowrap;
   padding-top: 70px;
-  /* Adjust this value to match the height of your navbar */
 }
 
 .contact-cards {
@@ -10,7 +9,6 @@
   flex-wrap: wrap;
   width: calc(100% - 200px);
   margin-left: 200px;
-  padding-top: 70px;
 }
 
 .user-details {
@@ -73,9 +71,9 @@
   display: flex;
 }
 
-/* Card layout adjustments */
 .contact-card-container .card {
   width: calc(33.33% - 20px);
+  margin: 10px;
 }
 
 .homepage-container.user-selected .contact-card-container .card {
@@ -104,6 +102,29 @@
   width: 100%;
   height: 100%;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.form-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  margin: 20px;
+  max-height: calc(100% - 40px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .confirm-modal {
@@ -125,5 +146,41 @@
   border-radius: 5px;
   text-align: center;
   width: 300px;
-  /* Adjust the width as needed */
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    max-width: 90%;
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .form-container form {
+    width: 100%;
+  }
+
+  .input-group {
+    margin-bottom: 10px;
+  }
+
+  .btn-container {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+.show-more-button {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.show-more-button .btn:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
 }

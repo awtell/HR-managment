@@ -8,16 +8,39 @@ import Sidebar from './SideBar/SideBar';
 
 function HomePage() {
   const [users, setUsers] = useState([]);
+  const [visibleUsers, setVisibleUsers] = useState([]);
   const [formVisible, setFormVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [showMore, setShowMore] = useState(false);
+  const [hasMoreUsers, setHasMoreUsers] = useState(true);
 
   useEffect(() => {
-    fetchUsers()
-      .then(data => setUsers(data))
+    fetchUsers(9) // Fetch only 9 users initially
+      .then(data => {
+        setUsers(data);
+        setVisibleUsers(data.slice(0, 9));
+        setHasMoreUsers(data.length > 9);
+      })
       .catch(error => console.error('Error fetching users:', error));
   }, []);
+
+  useEffect(() => {
+    if (showMore) {
+      fetchUsers(visibleUsers.length + 9)
+        .then(data => {
+          if (data.length <= visibleUsers.length) {
+            setHasMoreUsers(false);
+          } else {
+            setUsers(data);
+            setVisibleUsers(data.slice(0, visibleUsers.length + 9));
+          }
+        })
+        .catch(error => console.error('Error fetching users:', error))
+        .finally(() => setShowMore(false));
+    }
+  }, [showMore, visibleUsers.length]);
 
   const toggleFormVisibility = useCallback(() => {
     setFormVisible(prev => !prev);
@@ -39,11 +62,9 @@ function HomePage() {
   const handleConfirmDelete = async () => {
     try {
       const response = await deleteUser(userToDelete);
-      console.log('User deleted successfully:', response);
       setUsers(prevUsers => prevUsers.filter(user => user.id !== userToDelete));
     } catch (error) {
       console.error('Error deleting user:', error);
-      // Handle error, e.g., show an error message to the user
     } finally {
       setShowConfirmModal(false);
       setUserToDelete(null);
@@ -68,7 +89,10 @@ function HomePage() {
       <Sidebar companies={companies} />
       <div className={`homepage-container ${selectedUser ? 'user-selected' : ''}`}>
         <div className="contact-cards">
-          <ContactCard users={users} onCardClick={handleCardClick} />
+          <ContactCard users={visibleUsers} onCardClick={handleCardClick} />
+          <div className="show-more-button">
+            <button className="btn" onClick={() => setShowMore(true)} disabled={!hasMoreUsers}>Show More</button>
+          </div>
         </div>
         {selectedUser && (
           <div className="user-details">
