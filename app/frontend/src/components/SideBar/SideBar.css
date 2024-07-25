@@ -8,6 +8,14 @@
   padding: 20px;
   overflow-y: auto;
   border-right: 1px solid #ddd;
+  transition: width 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.minimized {
+  width: 40px;
+  padding: 10px;
 }
 
 .sidebar h3 {
@@ -33,7 +41,7 @@
 .clear-button {
   position: absolute;
   right: 10px;
-  top: 50%;
+  top: 40%;
   transform: translateY(-50%);
   background: none;
   border: none;
@@ -70,4 +78,26 @@
 
 .company-name {
   margin-left: 10px;
+}
+
+.toggle-button {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #888;
+}
+
+.toggle-button:hover {
+  color: #000;
+}
+
+.main-content {
+  margin-left: 200px; /* Adjust according to the sidebar width */
+  transition: margin-left 0.3s;
+}
+
+.sidebar.minimized ~ .main-content {
+  margin-left: 40px; /* Adjust according to the minimized sidebar width */
 }

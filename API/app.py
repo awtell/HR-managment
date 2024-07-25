@@ -6,7 +6,7 @@ import logging
 
 app = Flask(__name__)
 
-# Apply CORS settings to the /user route only
+
 CORS(app, resources={r"/user/*": {"origins": "http://localhost:3000"}})
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:charbel1@localhost/inetrn'
@@ -30,8 +30,9 @@ class Users(db.Model):
     color = db.Column(db.String(50))
     phone = db.Column(db.String(50))
     password = db.Column(db.String(50))
+    email = db.Column(db.String(100), unique=True, nullable=False)
 
-    def __init__(self, fName, lName, company, address, city, country, color, phone, password):
+    def __init__(self, fName, lName, company, address, city, country, color, phone, password, email):
         self.fName = fName
         self.lName = lName
         self.company = company
@@ -41,12 +42,13 @@ class Users(db.Model):
         self.color = color
         self.phone = phone
         self.password = password
+        self.email = email
 
 
 class UsersSchema(ma.Schema):
     class Meta:
         fields = ('id', 'fName', 'lName', 'company', 'address',
-                  'city', 'country', 'color', 'phone', 'password')
+                  'city', 'country', 'color', 'phone', 'password', 'email')
 
 
 user_schema = UsersSchema()
@@ -59,29 +61,33 @@ def handle_user():
         logging.debug("Received POST request")
         data = request.json
         logging.debug(f"Request data: {data}")
-        fName = data.get('fName')
-        lName = data.get('lName')
-        company = data.get('company')
-        address = data.get('address')
-        city = data.get('city')
-        country = data.get('country')
-        color = data.get('color')
-        phone = data.get('phone')
-        password = data.get('password')
 
-        if not all([fName, lName, company, address, city, country, color, phone, password]):
-            logging.error("Missing data in the request")
-            return jsonify({"error": "Missing data"}), 400
+        required_fields = ['fName', 'lName', 'company', 'address',
+                           'city', 'country', 'color', 'phone', 'password', 'email']
+        missing_fields = [
+            field for field in required_fields if not data.get(field)]
 
-        new_user = Users(fName, lName, company, address,
-                         city, country, color, phone, password)
+        if missing_fields:
+            logging.error(f"Missing data in the request: {missing_fields}")
+            return jsonify({"error": "Missing data", "missing_fields": missing_fields}), 400
 
-        db.session.add(new_user)
-        db.session.commit()
+        try:
+            new_user = Users(
+                fName=data['fName'], lName=data['lName'], company=data['company'],
+                address=data['address'], city=data['city'], country=data['country'],
+                color=data['color'], phone=data['phone'], password=data['password'],
+                email=data['email']
+            )
 
-        logging.debug("User added successfully")
+            db.session.add(new_user)
+            db.session.commit()
 
-        return user_schema.jsonify(new_user), 201
+            logging.debug("User added successfully")
+            return user_schema.jsonify(new_user), 201
+        except Exception as e:
+            logging.error(f"Error adding user: {str(e)}")
+            return jsonify({"error": "Server error"}), 500
+
     else:  # GET request
         logging.debug("Received GET request")
         all_users = Users.query.all()

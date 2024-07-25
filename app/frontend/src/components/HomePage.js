@@ -15,7 +15,7 @@ function HomePage({ onLogout }) {
   const [userToDelete, setUserToDelete] = useState(null);
   const [showMore, setShowMore] = useState(false);
   const [hasMoreUsers, setHasMoreUsers] = useState(true);
-  const [selectedCompanies, setSelectedCompanies] = useState([]); // Updated state
+  const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     fName: '',
@@ -132,8 +132,8 @@ function HomePage({ onLogout }) {
 
   return (
     <>
-      <NavBar toggleFormVisibility={toggleFormVisibility} onLogout={onLogout} />
-      <Sidebar companies={companies} onCompanyClick={handleCompanyClick} selectedCompanies={selectedCompanies} /> {/* Updated prop */}
+      <NavBar onLogout={onLogout} />
+      <Sidebar companies={companies} onCompanyClick={handleCompanyClick} selectedCompanies={selectedCompanies} toggleFormVisibility={toggleFormVisibility} />
       <div className={`homepage-container ${selectedUser ? 'user-selected' : ''}`}>
         <div className="contact-cards">
           <ContactCard users={filteredUsers} onCardClick={handleCardClick} />
