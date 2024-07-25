@@ -6,7 +6,7 @@ import { fetchUsers, deleteUser } from '../api';
 import './HomePage.css';
 import Sidebar from './SideBar/SideBar';
 
-function HomePage() {
+function HomePage({ onLogout }) {
   const [users, setUsers] = useState([]);
   const [visibleUsers, setVisibleUsers] = useState([]);
   const [formVisible, setFormVisible] = useState(false);
@@ -15,7 +15,17 @@ function HomePage() {
   const [userToDelete, setUserToDelete] = useState(null);
   const [showMore, setShowMore] = useState(false);
   const [hasMoreUsers, setHasMoreUsers] = useState(true);
-  const [selectedCompany, setSelectedCompany] = useState(null); // New state for selected company
+  const [selectedCompanies, setSelectedCompanies] = useState([]); // Updated state
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    fName: '',
+    lName: '',
+    address: '',
+    company: '',
+    city: '',
+    country: '',
+    phone: '',
+  });
 
   useEffect(() => {
     fetchUsers(9)
@@ -53,6 +63,7 @@ function HomePage() {
 
   const handleCloseDetails = useCallback(() => {
     setSelectedUser(null);
+    setIsEditing(false);
   }, []);
 
   const confirmDeleteUser = useCallback((userId) => {
@@ -85,21 +96,47 @@ function HomePage() {
 
   const companies = useMemo(() => extractCompanies(users), [users, extractCompanies]);
 
-  const handleCompanyClick = (company) => { // New function to handle company click
-    setSelectedCompany(prevCompany => (prevCompany === company ? null : company));
+  const handleCompanyClick = (company) => {
+    setSelectedCompanies(prevCompanies => {
+      if (prevCompanies.includes(company)) {
+        return prevCompanies.filter(c => c !== company);
+      } else {
+        return [...prevCompanies, company];
+      }
+    });
   };
 
-  const filteredUsers = useMemo(() => { // Filter users based on selected company
-    return selectedCompany ? users.filter(user => user.company === selectedCompany) : visibleUsers;
-  }, [selectedCompany, users, visibleUsers]);
+  const filteredUsers = useMemo(() => {
+    return selectedCompanies.length > 0
+      ? users.filter(user => selectedCompanies.includes(user.company))
+      : visibleUsers;
+  }, [selectedCompanies, users, visibleUsers]);
+
+  const handleEdit = () => {
+    setFormData(selectedUser);
+    setIsEditing(true);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    try {
+      const updatedUser = { ...selectedUser, ...formData };
+      setUsers((prevUsers) => prevUsers.map((user) => (user.id === selectedUser.id ? updatedUser : user)));
+      setVisibleUsers((prevVisibleUsers) => prevVisibleUsers.map((user) => (user.id === selectedUser.id ? updatedUser : user)));
+      setSelectedUser(updatedUser);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
+  };
 
   return (
     <>
-      <NavBar toggleFormVisibility={toggleFormVisibility} />
-      <Sidebar companies={companies} onCompanyClick={handleCompanyClick} selectedCompany={selectedCompany} /> {/* Pass the handleCompanyClick function */}
+      <NavBar toggleFormVisibility={toggleFormVisibility} onLogout={onLogout} />
+      <Sidebar companies={companies} onCompanyClick={handleCompanyClick} selectedCompanies={selectedCompanies} /> {/* Updated prop */}
       <div className={`homepage-container ${selectedUser ? 'user-selected' : ''}`}>
         <div className="contact-cards">
-          <ContactCard users={filteredUsers} onCardClick={handleCardClick} /> {/* Use filteredUsers */}
+          <ContactCard users={filteredUsers} onCardClick={handleCardClick} />
           {hasMoreUsers && (
             <div className="show-more-button">
               <button className="btn" onClick={() => setShowMore(true)}>Show More</button>
@@ -110,18 +147,83 @@ function HomePage() {
           <div className="user-details">
             <div className="selected-user-details">
               <button className="close-button" onClick={handleCloseDetails}>×</button>
-              <h2>{selectedUser.fName} {selectedUser.lName}</h2>
-              <p>Address: {selectedUser.address}</p>
-              <p>Company: {selectedUser.company}</p>
-              <p>City: {selectedUser.city}</p>
-              <p>Country: {selectedUser.country}</p>
-              <p>Phone: {selectedUser.phone}</p>
-              <div className="user-actions">
-                <button className="btn">Share</button>
-                <button className="btn">Send</button>
-                <button className="btn">Call</button>
-                <button className="btn delete" onClick={() => confirmDeleteUser(selectedUser.id)}>Delete</button>
-              </div>
+              {isEditing ? (
+                <form onSubmit={handleSave}>
+                  <div>
+                    <label>First Name:</label>
+                    <input
+                      type="text"
+                      value={formData.fName}
+                      onChange={(e) => setFormData({ ...formData, fName: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label>Last Name:</label>
+                    <input
+                      type="text"
+                      value={formData.lName}
+                      onChange={(e) => setFormData({ ...formData, lName: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label>Address:</label>
+                    <input
+                      type="text"
+                      value={formData.address}
+                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label>Company:</label>
+                    <input
+                      type="text"
+                      value={formData.company}
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label>City:</label>
+                    <input
+                      type="text"
+                      value={formData.city}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label>Country:</label>
+                    <input
+                      type="text"
+                      value={formData.country}
+                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label>Phone:</label>
+                    <input
+                      type="text"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    />
+                  </div>
+                  <div className="user-actions">
+                    <button className="btn" type="submit">Save</button>
+                    <button className="btn delete" onClick={() => confirmDeleteUser(selectedUser.id)}>Delete</button>
+                  </div>
+                </form>
+              ) : (
+                <>
+                  <h2>{selectedUser.fName} {selectedUser.lName}</h2>
+                  <p>Address: {selectedUser.address}</p>
+                  <p>Company: {selectedUser.company}</p>
+                  <p>City: {selectedUser.city}</p>
+                  <p>Country: {selectedUser.country}</p>
+                  <p>Phone: {selectedUser.phone}</p>
+                  <div className="user-actions">
+                    <button className="btn edit" onClick={handleEdit}>Edit</button>
+                    <button className="btn delete" onClick={() => confirmDeleteUser(selectedUser.id)}>Delete</button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

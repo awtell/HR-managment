@@ -1,33 +1,26 @@
-/*--------------------------------------------------------------
-# General
---------------------------------------------------------------*/
-body {
-  font-family: "Open Sans", sans-serif;
-  color: #444444;
+/* General Button Styles */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+  margin: 5px;
 }
 
-a {
-  color: #3498db;
-  text-decoration: none;
+.btn.logout {
+  background-color: #f39c12;
 }
 
-a:hover {
-  color: #5faee3;
-  text-decoration: none;
+.btn.logout:hover {
+  background-color: #e67e22;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Raleway", sans-serif;
+.btn.logout:active {
+  background-color: #d35400;
 }
 
-/*--------------------------------------------------------------
-# Header
---------------------------------------------------------------*/
+/* Header and Navbar styles */
 #header {
   height: 70px;
   transition: all 0.5s;
@@ -35,10 +28,8 @@ h6 {
   background: white;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.2);
   position: fixed;
-
 }
 
-/* Add this at the end of your NavBar.css */
 .transparent-bg {
   background: white;
 }
@@ -49,67 +40,10 @@ h6 {
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
 }
 
-
-#header.header-scrolled {
-  background: #fff;
-  height: 60px;
-  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
-}
-
-#header .logo h1 {
-  font-size: 28px;
-  margin: 0;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #384046;
-}
-
-#header .logo h1 a,
-#header .logo h1 a:hover {
-  color: #384046;
-  text-decoration: none;
-}
-
 #header .logo img {
   max-height: 40px;
 }
 
-/*--------------------------------------------------------------
-# Header Social Links
---------------------------------------------------------------*/
-.header-social-links {
-  margin: 0 0 0 30px;
-}
-
-.header-social-links a {
-  color: #9ba6af;
-  padding-left: 8px;
-  display: inline-block;
-  line-height: 0px;
-  transition: 0.3s;
-}
-
-.header-social-links a i {
-  line-height: 0;
-}
-
-.header-social-links a:hover {
-  color: #3498db;
-}
-
-@media (max-width: 768px) {
-  .header-social-links {
-    margin: 0 15px 0 0;
-  }
-}
-
-/*--------------------------------------------------------------
-# Navigation Menu
---------------------------------------------------------------*/
-/**
-* Desktop Navigation 
-*/
 .navbar {
   padding: 0;
 }
@@ -138,13 +72,6 @@ h6 {
   color: #4f5a62;
   white-space: nowrap;
   transition: 0.3s;
-}
-
-.navbar a i,
-.navbar a:focus i {
-  font-size: 12px;
-  line-height: 0;
-  margin-left: 5px;
 }
 
 .navbar a:hover,
@@ -178,10 +105,6 @@ h6 {
   font-size: 14px;
   font-weight: 400;
   color: #21262a;
-}
-
-.navbar .dropdown ul a i {
-  font-size: 12px;
 }
 
 .navbar .dropdown ul a:hover,
@@ -219,9 +142,6 @@ h6 {
   }
 }
 
-/**
-* Mobile Navigation 
-*/
 .mobile-nav-toggle {
   color: #384046;
   font-size: 28px;
@@ -255,7 +175,6 @@ h6 {
   background: rgba(33, 38, 42, 0.9);
   transition: 0.3s;
   z-index: 999;
-
 }
 
 .navbar-mobile .mobile-nav-toggle {

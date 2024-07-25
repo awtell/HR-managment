@@ -14,8 +14,36 @@
   font-size: 18px;
   font-weight: bold;
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: #333;
+}
+
+.search-container {
+  position: relative;
+}
+
+.sidebar .search-box {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.clear-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #888;
+}
+
+.clear-button:hover {
+  color: #000;
 }
 
 .sidebar ul {

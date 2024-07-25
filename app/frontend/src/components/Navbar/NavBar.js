@@ -7,7 +7,7 @@ import '../../assets/vendor/glightbox/css/glightbox.min.css';
 import '../../assets/vendor/swiper/swiper-bundle.min.css';
 import '../../assets/vendor/bootstrap-icons/bootstrap-icons.css';
 
-const NavBar = ({ toggleFormVisibility }) => {
+const NavBar = ({ toggleFormVisibility, onLogout }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled] = useState(false);
 
@@ -29,6 +29,7 @@ const NavBar = ({ toggleFormVisibility }) => {
               <li><a className="nav-link scrollto" href="#services">Our Services</a></li>
               <li><a className="nav-link scrollto" href="#portfolio">Contact Us</a></li>
               <li><a className="nav-link scrollto" onClick={toggleFormVisibility}>Create Employee</a></li>
+              <li><button className="btn logout" onClick={onLogout}>Logout</button></li>
             </ul>
             <i className={`bi ${menuOpen ? 'bi-x' : 'bi-list'} mobile-nav-toggle`} onClick={toggleMenu}></i>
           </nav>
