@@ -2,18 +2,22 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import logging
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-
-CORS(app, resources={r"/user/*": {"origins": "http://localhost:3000"}})
+# Configure CORS
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:charbel1@localhost/inetrn'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+jwt = JWTManager(app)
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -29,7 +33,7 @@ class Users(db.Model):
     country = db.Column(db.String(50))
     color = db.Column(db.String(50))
     phone = db.Column(db.String(50))
-    password = db.Column(db.String(50))
+    password = db.Column(db.String(255))
     email = db.Column(db.String(100), unique=True, nullable=False)
 
     def __init__(self, fName, lName, company, address, city, country, color, phone, password, email):
@@ -41,7 +45,7 @@ class Users(db.Model):
         self.country = country
         self.color = color
         self.phone = phone
-        self.password = password
+        self.password = generate_password_hash(password)
         self.email = email
 
 
@@ -55,12 +59,31 @@ user_schema = UsersSchema()
 users_schema = UsersSchema(many=True)
 
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    if not data or not data.get('email') or not data.get('password'):
+        return jsonify({"error": "Missing email or password"}), 400
+
+    email = data.get('email')
+    password = data.get('password')
+
+    user = Users.query.filter_by(email=email).first()
+
+    if user and check_password_hash(user.password, password):
+        access_token = create_access_token(identity={'email': user.email})
+        return jsonify({"access_token": access_token}), 200
+    else:
+        return jsonify({"error": "Invalid email or password"}), 401
+
+
 @app.route('/user', methods=['GET', 'POST'])
+@jwt_required(optional=True)
 def handle_user():
+    current_user = get_jwt_identity()
     if request.method == 'POST':
-        logging.debug("Received POST request")
         data = request.json
-        logging.debug(f"Request data: {data}")
+        app.logger.debug(f"Incoming data: {data}")
 
         required_fields = ['fName', 'lName', 'company', 'address',
                            'city', 'country', 'color', 'phone', 'password', 'email']
@@ -68,7 +91,6 @@ def handle_user():
             field for field in required_fields if not data.get(field)]
 
         if missing_fields:
-            logging.error(f"Missing data in the request: {missing_fields}")
             return jsonify({"error": "Missing data", "missing_fields": missing_fields}), 400
 
         try:
@@ -82,32 +104,43 @@ def handle_user():
             db.session.add(new_user)
             db.session.commit()
 
-            logging.debug("User added successfully")
             return user_schema.jsonify(new_user), 201
         except Exception as e:
-            logging.error(f"Error adding user: {str(e)}")
-            return jsonify({"error": "Server error"}), 500
+            app.logger.error(f"Error: {str(e)}")
+            return jsonify({"error": "Database error", "details": str(e)}), 500
 
     else:  # GET request
-        logging.debug("Received GET request")
-        all_users = Users.query.all()
-        result = users_schema.dump(all_users)
-        return jsonify(result)
+        if current_user:
+            all_users = Users.query.all()
+            result = users_schema.dump(all_users)
+            return jsonify(result)
+        else:
+            return jsonify({"message": "Unauthorized"}), 401
 
-
-@app.route('/user/<id>', methods=['DELETE'])
-def delete_user(id):
-    logging.debug("Received DELETE request")
+@app.route('/user/<id>', methods=['DELETE', 'PUT'])
+@jwt_required()
+def handle_user_id(id):
     user = Users.query.get(id)
     if not user:
-        logging.error("User not found")
         return jsonify({"error": "User not found"}), 404
 
-    db.session.delete(user)
-    db.session.commit()
+    if request.method == 'DELETE':
+        db.session.delete(user)
+        db.session.commit()
+        return user_schema.jsonify(user)
 
-    logging.debug("User deleted successfully")
-    return user_schema.jsonify(user)
+    elif request.method == 'PUT':
+        data = request.json
+
+        for key in data:
+            if hasattr(user, key):
+                setattr(user, key, data[key])
+
+        try:
+            db.session.commit()
+            return user_schema.jsonify(user)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
 
 if __name__ == '__main__':

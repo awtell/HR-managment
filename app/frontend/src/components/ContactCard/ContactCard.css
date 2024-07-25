@@ -72,3 +72,8 @@
     order: -1;
   }
 }
+
+.sidebar-minimized .contact-card-container {
+  margin-left: 0;
+  padding-left: 20px;
+}

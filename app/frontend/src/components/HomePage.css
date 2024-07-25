@@ -2,6 +2,11 @@
   display: flex;
   flex-wrap: nowrap;
   padding-top: 70px;
+  transition: margin-left 0.3s ease;
+}
+
+.homepage-container.sidebar-minimized .contact-cards {
+  margin-left: 0;
 }
 
 .contact-cards {
@@ -23,7 +28,6 @@
   height: calc(100vh - 70px);
   overflow-y: auto;
 }
-
 
 .selected-user-details {
   position: relative;

@@ -1,12 +1,13 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import NavBar from './Navbar/NavBar';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import ContactCard from './ContactCard/ContactCard';
 import Form from './Form/Form';
-import { fetchUsers, deleteUser } from '../api';
+import { fetchUsers, postUser, deleteUser, updateUser } from '../api';
 import './HomePage.css';
 import Sidebar from './SideBar/SideBar';
+import NavBar from './Navbar/NavBar';
 
-function HomePage({ onLogout }) {
+
+const HomePage = ({ onLogout }) => {
   const [users, setUsers] = useState([]);
   const [visibleUsers, setVisibleUsers] = useState([]);
   const [formVisible, setFormVisible] = useState(false);
@@ -17,6 +18,7 @@ function HomePage({ onLogout }) {
   const [hasMoreUsers, setHasMoreUsers] = useState(true);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [sidebarMinimized, setSidebarMinimized] = useState(false);
   const [formData, setFormData] = useState({
     fName: '',
     lName: '',
@@ -27,19 +29,21 @@ function HomePage({ onLogout }) {
     phone: '',
   });
 
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
-    fetchUsers(9)
+    fetchUsers(9, token)
       .then(data => {
         setUsers(data);
         setVisibleUsers(data.slice(0, 9));
         setHasMoreUsers(data.length > 9);
       })
       .catch(error => console.error('Error fetching users:', error));
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (showMore) {
-      fetchUsers(visibleUsers.length + 6)
+      fetchUsers(visibleUsers.length + 6, token)
         .then(data => {
           if (data.length <= visibleUsers.length) {
             setHasMoreUsers(false);
@@ -51,7 +55,7 @@ function HomePage({ onLogout }) {
         .catch(error => console.error('Error fetching users:', error))
         .finally(() => setShowMore(false));
     }
-  }, [showMore, visibleUsers.length]);
+  }, [showMore, visibleUsers.length, token]);
 
   const toggleFormVisibility = useCallback(() => {
     setFormVisible(prev => !prev);
@@ -73,7 +77,7 @@ function HomePage({ onLogout }) {
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteUser(userToDelete);
+      await deleteUser(userToDelete, token);
       setUsers(prevUsers => prevUsers.filter(user => user.id !== userToDelete));
       setVisibleUsers(prevVisibleUsers => prevVisibleUsers.filter(user => user.id !== userToDelete));
     } catch (error) {
@@ -121,6 +125,7 @@ function HomePage({ onLogout }) {
     e.preventDefault();
     try {
       const updatedUser = { ...selectedUser, ...formData };
+      await updateUser(selectedUser.id, updatedUser, token);
       setUsers((prevUsers) => prevUsers.map((user) => (user.id === selectedUser.id ? updatedUser : user)));
       setVisibleUsers((prevVisibleUsers) => prevVisibleUsers.map((user) => (user.id === selectedUser.id ? updatedUser : user)));
       setSelectedUser(updatedUser);
@@ -130,11 +135,22 @@ function HomePage({ onLogout }) {
     }
   };
 
+  const toggleSidebar = () => {
+    setSidebarMinimized(prev => !prev);
+  };
+
   return (
     <>
       <NavBar onLogout={onLogout} />
-      <Sidebar companies={companies} onCompanyClick={handleCompanyClick} selectedCompanies={selectedCompanies} toggleFormVisibility={toggleFormVisibility} />
-      <div className={`homepage-container ${selectedUser ? 'user-selected' : ''}`}>
+      <Sidebar
+        companies={companies}
+        onCompanyClick={handleCompanyClick}
+        selectedCompanies={selectedCompanies}
+        toggleFormVisibility={toggleFormVisibility}
+        toggleSidebar={toggleSidebar}
+        sidebarMinimized={sidebarMinimized}
+      />
+      <div className={`homepage-container ${selectedUser ? 'user-selected' : ''} ${sidebarMinimized ? 'sidebar-minimized' : ''}`}>
         <div className="contact-cards">
           <ContactCard users={filteredUsers} onCardClick={handleCardClick} />
           {hasMoreUsers && (
@@ -244,6 +260,6 @@ function HomePage({ onLogout }) {
       )}
     </>
   );
-}
+};
 
 export default HomePage;

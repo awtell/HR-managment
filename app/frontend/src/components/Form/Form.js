@@ -4,6 +4,7 @@ import { postUser } from '../../api';
 
 const Form = ({ formVisible, toggleFormVisibility }) => {
   const [formData, setFormData] = useState({
+    email: '',
     fName: '',
     lName: '',
     address: '',
@@ -55,7 +56,15 @@ const Form = ({ formVisible, toggleFormVisibility }) => {
   return (
     <div className="form-wrapper">
       <div className="form-container" >
+        <h2></h2>
+        <h2></h2>
+        <h2></h2>
+        <h2></h2>
+        <h2></h2>
+
+        <h2></h2>
         <h2>Registration Form</h2>
+
         <form onSubmit={handleSubmit}>
           <div className="input-group mb-3">
             <input type='email' className="form-control" placeholder="Email" name="email" value={formData.email} onChange={handleChange} required />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import HomePage from './components/HomePage';
 import Login from './components/Login/Login';
+import './App.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,6 +21,7 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('token');
   };
 
   return (
