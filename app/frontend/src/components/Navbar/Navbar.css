@@ -9,15 +9,15 @@
 }
 
 .btn.logout {
-  background-color: #f39c12;
+  background-color: #5EAEE3;
 }
 
 .btn.logout:hover {
-  background-color: #e67e22;
+  background-color: #5EAEE3;
 }
 
 .btn.logout:active {
-  background-color: #d35400;
+  background-color: #5EAEE3;
 }
 
 /* Header and Navbar styles */

@@ -5,7 +5,7 @@ import { fetchUsers, postUser, deleteUser, updateUser } from '../api';
 import './HomePage.css';
 import Sidebar from './SideBar/SideBar';
 import NavBar from './Navbar/NavBar';
-import Footer from './Footer/Footer';
+import LoadingAnimation from './Loading/LoadingAnimation';
 
 const HomePage = ({ onLogout }) => {
   const [users, setUsers] = useState([]);
@@ -30,21 +30,25 @@ const HomePage = ({ onLogout }) => {
     country: '',
     phone: '',
   });
+  const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem('token');
 
   useEffect(() => {
+    setLoading(true);
     fetchUsers(9, token)
       .then(data => {
         setUsers(data);
         setVisibleUsers(data.slice(0, 9));
         setHasMoreUsers(data.length > 9);
       })
-      .catch(error => console.error('Error fetching users:', error));
+      .catch(error => console.error('Error fetching users:', error))
+      .finally(() => setLoading(false));
   }, [token]);
 
   useEffect(() => {
     if (showMore) {
+      setLoading(true);
       fetchUsers(visibleUsers.length + 6, token)
         .then(data => {
           if (data.length <= visibleUsers.length) {
@@ -55,7 +59,10 @@ const HomePage = ({ onLogout }) => {
           }
         })
         .catch(error => console.error('Error fetching users:', error))
-        .finally(() => setShowMore(false));
+        .finally(() => {
+          setLoading(false);
+          setShowMore(false);
+        });
     }
   }, [showMore, visibleUsers.length, token]);
 
@@ -163,14 +170,13 @@ const HomePage = ({ onLogout }) => {
         sidebarMinimized={sidebarMinimized}
       />
       <div className={`homepage-container ${sidebarMinimized ? 'sidebar-minimized' : 'sidebar-expanded'}`}>
-        <div className="contact-cards">
-          <ContactCard users={filteredUsers} onCardClick={handleCardClick} />
-          {hasMoreUsers && (
-            <div className="show-more-button">
-              <button className="btn" onClick={() => setShowMore(true)}>Show More</button>
-            </div>
-          )}
-        </div>
+        {loading ? (
+          <LoadingAnimation />
+        ) : (
+          <div className="contact-cards">
+            <ContactCard users={filteredUsers} onCardClick={handleCardClick} hasMoreUsers={hasMoreUsers} onShowMore={() => setShowMore(true)} />
+          </div>
+        )}
         {selectedUser && (
           <div className={`user-details ${isMobile ? 'mobile' : ''}`}>
             <div className="selected-user-details">
@@ -265,12 +271,11 @@ const HomePage = ({ onLogout }) => {
         <div className="confirm-modal">
           <div className="modal-content">
             <p>Are you sure you want to delete this user?</p>
-            <button className="btn btn-yes" onClick={handleConfirmDelete}>Yes</button>
-            <button className="btn btn-no" onClick={handleCancelDelete}>No</button>
+            <button className="btn-yes" onClick={handleConfirmDelete}>Yes</button>
+            <button className="btn-no" onClick={handleCancelDelete}>No</button>
           </div>
         </div>
       )}
-      <Footer />
     </>
   );
 };

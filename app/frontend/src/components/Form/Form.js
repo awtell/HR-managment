@@ -14,7 +14,10 @@ const Form = ({ formVisible, toggleFormVisibility, formType }) => {
     country: '',
     color: '#000000',
     phone: '',
+    role: '',
   });
+
+  const [canEdit, setCanEdit] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,10 +27,19 @@ const Form = ({ formVisible, toggleFormVisibility, formType }) => {
     }));
   };
 
+  const handleCheckboxChange = (e) => {
+    setCanEdit(e.target.checked);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const updatedFormData = {
+      ...formData,
+      role: canEdit ? 'RU' : 'R',
+    };
+
     try {
-      await postUser(formData, formType);
+      await postUser(updatedFormData, formType);
       alert(`${formType === 'admin' ? 'Admin' : 'Employee'} created successfully`);
       toggleFormVisibility();
     } catch (error) {
@@ -47,7 +59,6 @@ const Form = ({ formVisible, toggleFormVisibility, formType }) => {
         console.error('Error fetching countries:', error);
       }
     };
-
     fetchCountries();
   }, []);
 
@@ -92,6 +103,12 @@ const Form = ({ formVisible, toggleFormVisibility, formType }) => {
               </div>
               <div className="input-group mb-3">
                 <input type="text" className="form-control" placeholder="Phone" name="phone" value={formData.phone} onChange={handleChange} required />
+              </div>
+              <div className="input-group mb-3">
+                <label>
+                  <input type="checkbox" checked={canEdit} onChange={handleCheckboxChange} />
+                  Can Edit
+                </label>
               </div>
             </>
           )}

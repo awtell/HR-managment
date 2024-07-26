@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
-import './Login.css';
 import { Link } from 'react-router-dom';
+import './Login.css';
 
 const HRLogin = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const handleEmailChange = (e) => {
-        setEmail(e.target.value);
-    };
-    const handlePasswordChange = (e) => {
-        setPassword(e.target.value);
-    };
+    const [formVisible, setFormVisible] = useState(false);
+    const [formType, setFormType] = useState('employee');
+
+    const handleEmailChange = (e) => setEmail(e.target.value);
+    const handlePasswordChange = (e) => setPassword(e.target.value);
+
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
     };
-    async function handleSubmit(event) {
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         if (!validateEmail(email)) {
             setError("Invalid email format");
@@ -49,19 +50,23 @@ const HRLogin = ({ onLogin }) => {
             setError('Error logging in, please try again later');
             console.error('Error logging in:', error);
         }
-    }
+    };
+
+
     return (
         <div className="login-container" style={{ textAlign: 'right' }}>
             <h2>HR Login</h2>
             {error && <p className="error">{error}</p>}
             <form onSubmit={handleSubmit}>
                 <input
+                    id='email'
                     type="text"
                     placeholder="Email"
                     value={email}
                     onChange={handleEmailChange}
                 />
                 <input
+                    id='password'
                     type="password"
                     placeholder="Password"
                     value={password}
@@ -70,9 +75,8 @@ const HRLogin = ({ onLogin }) => {
                 <button type="submit">Login</button>
                 <Link to="/login">Login as Admin</Link>
             </form>
-            <Link to="/homepage">Create an HR Account</Link>
-
         </div>
     );
 };
+
 export default HRLogin;

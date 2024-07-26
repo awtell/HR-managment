@@ -35,8 +35,9 @@ class Users(db.Model):
     phone = db.Column(db.String(50))
     password = db.Column(db.String(255))
     email = db.Column(db.String(100), unique=True, nullable=False)
+    role = db.Column(db.String(50), default='user')
 
-    def __init__(self, fName, lName, company, address, city, country, color, phone, password, email):
+    def __init__(self, fName, lName, company, address, city, country, color, phone, password, email, role='user'):
         self.fName = fName
         self.lName = lName
         self.company = company
@@ -47,6 +48,7 @@ class Users(db.Model):
         self.phone = phone
         self.password = generate_password_hash(password)
         self.email = email
+        self.role = role
 
 
 class Admins(db.Model):
@@ -62,7 +64,7 @@ class Admins(db.Model):
 class UsersSchema(ma.Schema):
     class Meta:
         fields = ('id', 'fName', 'lName', 'company', 'address',
-                  'city', 'country', 'color', 'phone', 'password', 'email')
+                  'city', 'country', 'color', 'phone', 'password', 'email', 'role')
 
 
 class AdminsSchema(ma.Schema):
@@ -132,7 +134,7 @@ def handle_user():
         app.logger.debug(f"Incoming data: {data}")
 
         required_fields = ['fName', 'lName', 'company', 'address',
-                           'city', 'country', 'color', 'phone', 'password', 'email']
+                           'city', 'country', 'color', 'phone', 'password', 'email', 'role']
         missing_fields = [
             field for field in required_fields if not data.get(field)]
 
@@ -144,7 +146,7 @@ def handle_user():
                 fName=data['fName'], lName=data['lName'], company=data['company'],
                 address=data['address'], city=data['city'], country=data['country'],
                 color=data['color'], phone=data['phone'], password=data['password'],
-                email=data['email']
+                email=data['email'], role=data['role']
             )
 
             db.session.add(new_user)

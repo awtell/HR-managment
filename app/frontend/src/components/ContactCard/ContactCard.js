@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import './ContactCard.css';
 import im1 from '../../assets/images/logo.jpeg';
+import Footer from '../Footer/Footer';
 
 const ContactCard = React.forwardRef((props, ref) => {
-  const { users, onCardClick } = props;
-  const [isSidebarMinimized, setIsSidebarMinimized] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsSidebarMinimized(!isSidebarMinimized);
-  };
+  const { users, onCardClick, hasMoreUsers, onShowMore } = props;
+  const [isSidebarMinimized] = useState(false);
 
   return (
     <section id='tables' className={`contact-card-container ${isSidebarMinimized ? 'sidebar-minimized' : ''}`}>
@@ -26,6 +23,12 @@ const ContactCard = React.forwardRef((props, ref) => {
           ))}
         </div>
       </div>
+      {hasMoreUsers && (
+        <div className="show-more-button">
+          <button className="btn" onClick={onShowMore}>Show More</button>
+        </div>
+      )}
+      <Footer isSidebarMinimized={isSidebarMinimized} />
     </section>
   );
 });

@@ -14,12 +14,10 @@
 
 .homepage-container.sidebar-minimized .contact-cards {
   margin-left: 40px;
-  /* Adjust according to the minimized sidebar width */
 }
 
 .homepage-container.sidebar-expanded .contact-cards {
   margin-left: 200px;
-  /* Adjust according to the expanded sidebar width */
 }
 
 .user-details {

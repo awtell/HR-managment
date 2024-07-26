@@ -150,3 +150,10 @@
     color: #fff;
     text-decoration: none;
 }
+
+/* app/frontend/src/components/Footer/Footer.css */
+#footer.sidebar-minimized {
+    /* Adjust the styles as needed */
+    margin-left: 250px; /* Example adjustment */
+    transition: margin-left 0.3s ease;
+}

@@ -17,6 +17,7 @@ const fetchUsers = async (limit) => {
     throw error;
   }
 };
+
 const postUser = async (user, userType = 'employee') => {
   const token = localStorage.getItem('access_token');
   try {
@@ -37,7 +38,6 @@ const postUser = async (user, userType = 'employee') => {
     throw error;
   }
 };
-
 
 const deleteUser = async (id) => {
   const token = localStorage.getItem('access_token');
