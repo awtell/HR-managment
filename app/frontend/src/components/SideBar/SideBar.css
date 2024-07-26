@@ -18,6 +18,21 @@
   padding: 10px;
 }
 
+@media (max-width: 768px) {
+  .sidebar.minimized {
+    width: 40px;
+    padding: 10px;
+  }
+
+  .main-content {
+    margin-left: 40px;
+  }
+
+  .sidebar.minimized ~ .main-content {
+    margin-left: 40px;
+  }
+}
+
 .sidebar h3 {
   font-size: 18px;
   font-weight: bold;

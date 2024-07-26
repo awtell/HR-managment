@@ -6,7 +6,6 @@ import './HomePage.css';
 import Sidebar from './SideBar/SideBar';
 import NavBar from './Navbar/NavBar';
 
-
 const HomePage = ({ onLogout }) => {
   const [users, setUsers] = useState([]);
   const [visibleUsers, setVisibleUsers] = useState([]);
@@ -19,6 +18,7 @@ const HomePage = ({ onLogout }) => {
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [sidebarMinimized, setSidebarMinimized] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [formData, setFormData] = useState({
     fName: '',
     lName: '',
@@ -56,6 +56,15 @@ const HomePage = ({ onLogout }) => {
         .finally(() => setShowMore(false));
     }
   }, [showMore, visibleUsers.length, token]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const toggleFormVisibility = useCallback(() => {
     setFormVisible(prev => !prev);
@@ -150,7 +159,7 @@ const HomePage = ({ onLogout }) => {
         toggleSidebar={toggleSidebar}
         sidebarMinimized={sidebarMinimized}
       />
-      <div className={`homepage-container ${selectedUser ? 'user-selected' : ''} ${sidebarMinimized ? 'sidebar-minimized' : ''}`}>
+      <div className={`homepage-container ${sidebarMinimized ? 'sidebar-minimized' : 'sidebar-expanded'}`}>
         <div className="contact-cards">
           <ContactCard users={filteredUsers} onCardClick={handleCardClick} />
           {hasMoreUsers && (
@@ -160,7 +169,7 @@ const HomePage = ({ onLogout }) => {
           )}
         </div>
         {selectedUser && (
-          <div className="user-details">
+          <div className={`user-details ${isMobile ? 'mobile' : ''}`}>
             <div className="selected-user-details">
               <button className="close-button" onClick={handleCloseDetails}>×</button>
               {isEditing ? (
