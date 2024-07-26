@@ -3,17 +3,6 @@ import './SideBar.css';
 
 const Sidebar = ({ companies, onCompanyClick, selectedCompanies, toggleFormVisibility, sidebarMinimized, toggleSidebar }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Set the mobile breakpoint
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -34,8 +23,9 @@ const Sidebar = ({ companies, onCompanyClick, selectedCompanies, toggleFormVisib
       </button>
       {!sidebarMinimized && (
         <>
-          <button className="btn create-employee" onClick={toggleFormVisibility}>Create Employee</button>
-          <h3>Company</h3>
+          <button className="btn create-employee" onClick={() => toggleFormVisibility('admin')}>Create Admin</button>
+          <button className="btn create-employee" onClick={() => toggleFormVisibility('employee')}>Create Employee</button>
+          <h3>Companies</h3>
           <div className="search-container">
             <input
               type="text"

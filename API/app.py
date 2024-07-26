@@ -49,14 +49,31 @@ class Users(db.Model):
         self.email = email
 
 
+class Admins(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+
+    def __init__(self, email, password):
+        self.email = email
+        self.password = generate_password_hash(password)
+
+
 class UsersSchema(ma.Schema):
     class Meta:
         fields = ('id', 'fName', 'lName', 'company', 'address',
                   'city', 'country', 'color', 'phone', 'password', 'email')
 
 
+class AdminsSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'email', 'password')
+
+
 user_schema = UsersSchema()
 users_schema = UsersSchema(many=True)
+admin_schema = AdminsSchema()
+admins_schema = AdminsSchema(many=True)
 
 
 @app.route('/login', methods=['POST'])
@@ -75,6 +92,34 @@ def login():
         return jsonify({"access_token": access_token}), 200
     else:
         return jsonify({"error": "Invalid email or password"}), 401
+
+
+@app.route('/admin/login', methods=['POST'])
+def admin_login():
+    data = request.json
+    if not data or not data.get('email') or not data.get('password'):
+        return jsonify({"error": "Missing email or password"}), 400
+
+    email = data.get('email')
+    password = data.get('password')
+
+    admin = Admins.query.filter_by(email=email).first()
+
+    if admin and check_password_hash(admin.password, password):
+        access_token = create_access_token(identity={'email': admin.email})
+        return jsonify({"access_token": access_token}), 200
+    else:
+        return jsonify({"error": "Invalid email or password"}), 401
+
+
+@app.route('/admin', methods=['POST'])
+def create_admin():
+    email = request.json['email']
+    password = request.json['password']
+    new_admin = Admins(email, password)
+    db.session.add(new_admin)
+    db.session.commit()
+    return admin_schema.jsonify(new_admin)
 
 
 @app.route('/user', methods=['GET', 'POST'])
@@ -120,7 +165,7 @@ def handle_user():
 
 
 @app.route('/user/<id>', methods=['DELETE', 'PUT'])
-# @jwt_required()  # Commented out to skip authentication
+@jwt_required()
 def handle_user_id(id):
     user = Users.query.get(id)
     if not user:

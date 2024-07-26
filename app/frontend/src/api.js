@@ -17,11 +17,10 @@ const fetchUsers = async (limit) => {
     throw error;
   }
 };
-
-const postUser = async (user) => {
+const postUser = async (user, userType = 'employee') => {
   const token = localStorage.getItem('access_token');
   try {
-    const response = await fetch('http://127.0.0.1:5000/user', {
+    const response = await fetch(`http://127.0.0.1:5000/${userType === 'admin' ? 'admin' : 'user'}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,6 +37,7 @@ const postUser = async (user) => {
     throw error;
   }
 };
+
 
 const deleteUser = async (id) => {
   const token = localStorage.getItem('access_token');
@@ -80,6 +80,27 @@ const updateUser = async (id, user) => {
   }
 };
 
+const adminLogin = async (adminCredentials) => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/admin/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(adminCredentials)
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    localStorage.setItem('access_token', data.access_token);
+    return data;
+  } catch (error) {
+    console.error('Admin login error:', error);
+    throw error;
+  }
+};
+
 export {
-  fetchUsers, postUser, deleteUser, updateUser
+  fetchUsers, postUser, deleteUser, updateUser, adminLogin
 };

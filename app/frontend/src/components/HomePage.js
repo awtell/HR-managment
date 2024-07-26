@@ -5,11 +5,13 @@ import { fetchUsers, postUser, deleteUser, updateUser } from '../api';
 import './HomePage.css';
 import Sidebar from './SideBar/SideBar';
 import NavBar from './Navbar/NavBar';
+import Footer from './Footer/Footer';
 
 const HomePage = ({ onLogout }) => {
   const [users, setUsers] = useState([]);
   const [visibleUsers, setVisibleUsers] = useState([]);
   const [formVisible, setFormVisible] = useState(false);
+  const [formType, setFormType] = useState('employee');
   const [selectedUser, setSelectedUser] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -66,7 +68,8 @@ const HomePage = ({ onLogout }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const toggleFormVisibility = useCallback(() => {
+  const toggleFormVisibility = useCallback((type) => {
+    setFormType(type);
     setFormVisible(prev => !prev);
   }, []);
 
@@ -255,7 +258,7 @@ const HomePage = ({ onLogout }) => {
       </div>
       {formVisible && (
         <div className="overlay">
-          <Form formVisible={formVisible} toggleFormVisibility={toggleFormVisibility} />
+          <Form formVisible={formVisible} toggleFormVisibility={toggleFormVisibility} formType={formType} />
         </div>
       )}
       {showConfirmModal && (
@@ -267,6 +270,7 @@ const HomePage = ({ onLogout }) => {
           </div>
         </div>
       )}
+      <Footer />
     </>
   );
 };

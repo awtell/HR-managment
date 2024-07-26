@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { adminLogin } from '../../api';
 import './Login.css';
 
 const Login = ({ onLogin }) => {
@@ -21,38 +22,23 @@ const Login = ({ onLogin }) => {
 
     async function handleSubmit(event) {
         event.preventDefault();
-
+    
         if (!validateEmail(email)) {
             setError("Invalid email format");
             return;
         }
-
-        const userData = {
+    
+        const adminCredentials = {
             email: email,
             password: password
         };
-
-        console.log('Submitting data:', userData);
-
+    
+        console.log('Submitting admin credentials:', adminCredentials);
+    
         try {
-            const response = await fetch('http://127.0.0.1:5000/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                setError(`Error: ${errorData.error}`);
-                console.error('Error logging in:', errorData);
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            console.log('User logged in successfully:', data);
-            onLogin(data.access_token); // Pass the token to handleLogin
+            const data = await adminLogin(adminCredentials);
+            console.log('Admin logged in successfully:', data);
+            onLogin(data.access_token); 
         } catch (error) {
             setError('Error logging in, please try again later');
             console.error('Error logging in:', error);
