@@ -46,13 +46,13 @@ const Login = ({ onLogin }) => {
             if (!response.ok) {
                 const errorData = await response.json();
                 setError(`Error: ${errorData.error}`);
-                console.error('Error creating user:', errorData);
+                console.error('Error logging in:', errorData);
                 throw new Error('Network response was not ok');
             }
 
             const data = await response.json();
             console.log('User logged in successfully:', data);
-            onLogin(data.access_token);
+            onLogin(data.access_token); // Pass the token to handleLogin
         } catch (error) {
             setError('Error logging in, please try again later');
             console.error('Error logging in:', error);

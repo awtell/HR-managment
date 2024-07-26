@@ -13,15 +13,17 @@ function App() {
     }
   }, []);
 
-  const handleLogin = () => {
+  const handleLogin = (token) => {
     setIsLoggedIn(true);
     localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('access_token', token);
+    console.log('Access Token:', token); // This will print the token to the console
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('token');
+    localStorage.removeItem('access_token');
   };
 
   return (

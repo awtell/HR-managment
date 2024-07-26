@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 import logging
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -78,9 +78,10 @@ def login():
 
 
 @app.route('/user', methods=['GET', 'POST'])
-@jwt_required(optional=True)
+@jwt_required()
 def handle_user():
     current_user = get_jwt_identity()
+    limit = request.args.get('limit', default=10, type=int)
     if request.method == 'POST':
         data = request.json
         app.logger.debug(f"Incoming data: {data}")
@@ -117,8 +118,9 @@ def handle_user():
         else:
             return jsonify({"message": "Unauthorized"}), 401
 
+
 @app.route('/user/<id>', methods=['DELETE', 'PUT'])
-@jwt_required()
+# @jwt_required()  # Commented out to skip authentication
 def handle_user_id(id):
     user = Users.query.get(id)
     if not user:
