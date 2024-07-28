@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Login.css';
 import LoadingAnimation from '../Loading/LoadingAnimation';
+import { hrLogin } from '../../api';
 
 const HRLogin = ({ onLogin }) => {
   const [email, setEmail] = useState('');
@@ -25,28 +26,14 @@ const HRLogin = ({ onLogin }) => {
     }
     const userData = {
       email: email,
-      password: password
+      password: password,
     };
     console.log('Submitting data:', userData);
 
     setLoading(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(`Error: ${errorData.error}`);
-        console.error('Error logging in:', errorData);
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
+      const data = await hrLogin(userData);
       console.log('User logged in successfully:', data);
       onLogin(data.access_token, data.user_type, data.user_role, true);
     } catch (error) {

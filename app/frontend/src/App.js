@@ -6,10 +6,7 @@ import HomePage from './components/HomePage';
 import NavBar from './components/Navbar/NavBar';
 import LoadingAnimation from './components/Loading/LoadingAnimation';
 import './App.css'; // Ensure you have the CSS file imported
-import {
-  fetchCurrentUser,
-  adminLogin
-} from './api';
+import { fetchCurrentUser } from './api';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
@@ -49,7 +46,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Simulate loading
     setTimeout(() => setLoading(false), 2000);
   }, []);
 

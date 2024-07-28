@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import ContactCard from './ContactCard/ContactCard';
 import Form from './Form/Form';
-import { fetchUsers, postUser, deleteUser, updateUser } from '../api';
+import { fetchUsers, deleteUser, updateUser } from '../api';
 import './HomePage.css';
 import Sidebar from './SideBar/SideBar';
 import NavBar from './Navbar/NavBar';

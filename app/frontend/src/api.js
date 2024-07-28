@@ -118,11 +118,33 @@ const adminLogin = async (adminCredentials) => {
   }
 };
 
+const hrLogin = async (userData) => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error logging in:', errorData);
+      throw new Error(errorData.error || 'Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('HR login error:', error);
+    throw error;
+  }
+};
+
 export {
+  hrLogin,
   fetchCurrentUser,
   fetchUsers,
   postUser,
   deleteUser,
   updateUser,
-  adminLogin
+  adminLogin,
 };
