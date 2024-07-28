@@ -1,3 +1,20 @@
+const fetchCurrentUser = async (token) => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/current_user', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Fetch current user error:', error);
+    throw error;
+  }
+};
+
 const fetchUsers = async (limit) => {
   const token = localStorage.getItem('access_token');
   try {
@@ -102,5 +119,10 @@ const adminLogin = async (adminCredentials) => {
 };
 
 export {
-  fetchUsers, postUser, deleteUser, updateUser, adminLogin
+  fetchCurrentUser,
+  fetchUsers,
+  postUser,
+  deleteUser,
+  updateUser,
+  adminLogin
 };

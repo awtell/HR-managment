@@ -1,7 +1,7 @@
 import React from 'react';
 import './ContactCard.css';
 import im1 from '../../assets/images/logo.jpeg';
-import Footer from '../Footer/Footer';
+import Footer from '../Footer/Footer'; // Import the Footer component
 
 const ContactCard = React.forwardRef((props, ref) => {
   const { users, onCardClick, hasMoreUsers, onShowMore, userRole } = props;
@@ -12,9 +12,9 @@ const ContactCard = React.forwardRef((props, ref) => {
       <div className="container">
         <div className="row">
           {users.map((user, index) => (
-            <div
-              className={`card ${userRole === 'R' ? 'unclickable' : ''}`}
-              key={index}
+            <div 
+              className={`card ${userRole === 'R' ? 'unclickable' : ''}`} 
+              key={index} 
               onClick={() => userRole !== 'R' && onCardClick(user)}
             >
               <img src={im1} alt="Profile" className="profile-image" />

@@ -31,7 +31,7 @@ const HomePage = ({ onLogout, userRole, sidebarMinimized, setSidebarMinimized, i
   });
   const [loading, setLoading] = useState(false);
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('access_token');
 
   useEffect(() => {
     setLoading(true);

@@ -4,6 +4,12 @@ import HRLogin from './components/Login/HRLogin';
 import Login from './components/Login/Login';
 import HomePage from './components/HomePage';
 import NavBar from './components/Navbar/NavBar';
+import LoadingAnimation from './components/Loading/LoadingAnimation';
+import './App.css'; // Ensure you have the CSS file imported
+import {
+  fetchCurrentUser,
+  adminLogin
+} from './api';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
@@ -17,38 +23,34 @@ function App() {
     const savedState = localStorage.getItem('isHRLogin');
     return savedState === 'true';
   });
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    const fetchCurrentUser = async () => {
-      const response = await fetch('http://127.0.0.1:5000/current_user', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
+    if (token) {
+      fetchCurrentUser(token).then(data => {
         setIsLoggedIn(true);
         setUserType(data.role === 'admin' ? 'admin' : 'user');
         setUserRole(data.role);
-      } else {
+      }).catch(() => {
         setIsLoggedIn(false);
         setUserType(null);
         setUserRole(null);
         setIsHRLogin(false);
-      }
-    };
-
-    if (token) {
-      fetchCurrentUser();
+      });
     } else {
       setIsLoggedIn(false);
       setUserType(null);
       setUserRole(null);
       setIsHRLogin(false);
     }
+  }, []);
+
+  useEffect(() => {
+    // Simulate loading
+    setTimeout(() => setLoading(false), 2000);
   }, []);
 
   const handleLogin = (token, userType, userRole, isHR) => {
@@ -95,42 +97,48 @@ function App() {
   const isAdmin = userType === 'admin';
 
   return (
-    <>
-      {isLoggedIn && userRole !== 'RU' && <NavBar onLogout={handleLogout} />}
-      <Routes>
-        <Route path="/hr-login" element={<HRLogin onLogin={(token, userType, userRole) => handleLogin(token, userType, userRole, true)} />} />
-        <Route path="/login" element={<Login onLogin={(token, userType, userRole) => handleLogin(token, userType, userRole, false)} />} />
-        <Route path="/home" element={
-          isLoggedIn ? (
-            isAdmin ? (
-              <HomePage onLogout={handleLogout} userRole={userRole} sidebarMinimized={sidebarMinimized} setSidebarMinimized={setSidebarMinimized} isHRLogin={isHRLogin} />
-            ) : (
-              <Navigate to="/hr-view" />
-            )
-          ) : (
-            <Navigate to="/login" />
-          )
-        } />
-        <Route path="/hr-view" element={
-          isLoggedIn ? (
-            <HomePage onLogout={handleLogout} userRole={userRole} sidebarMinimized={sidebarMinimized} setSidebarMinimized={setSidebarMinimized} isHRLogin={isHRLogin} />
-          ) : (
-            <Navigate to="/login" />
-          )
-        } />
-        <Route path="/" element={
-          isLoggedIn ? (
-            isAdmin ? (
-              <Navigate to="/home" />
-            ) : (
-              <Navigate to="/hr-view" />
-            )
-          ) : (
-            <Navigate to="/login" />
-          )
-        } />
-      </Routes>
-    </>
+    <div className={`app-container ${loading ? 'loading-background' : ''}`}>
+      {loading ? (
+        <LoadingAnimation />
+      ) : (
+        <>
+          {isLoggedIn && userRole !== 'RU' && <NavBar onLogout={handleLogout} />}
+          <Routes>
+            <Route path="/hr-login" element={<HRLogin onLogin={(token, userType, userRole) => handleLogin(token, userType, userRole, true)} />} />
+            <Route path="/login" element={<Login onLogin={(token, userType, userRole) => handleLogin(token, userType, userRole, false)} />} />
+            <Route path="/home" element={
+              isLoggedIn ? (
+                isAdmin ? (
+                  <HomePage onLogout={handleLogout} userRole={userRole} sidebarMinimized={sidebarMinimized} setSidebarMinimized={setSidebarMinimized} isHRLogin={isHRLogin} />
+                ) : (
+                  <Navigate to="/hr-view" />
+                )
+              ) : (
+                <Navigate to="/login" />
+              )
+            } />
+            <Route path="/hr-view" element={
+              isLoggedIn ? (
+                <HomePage onLogout={handleLogout} userRole={userRole} sidebarMinimized={sidebarMinimized} setSidebarMinimized={setSidebarMinimized} isHRLogin={isHRLogin} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            } />
+            <Route path="/" element={
+              isLoggedIn ? (
+                isAdmin ? (
+                  <Navigate to="/home" />
+                ) : (
+                  <Navigate to="/hr-view" />
+                )
+              ) : (
+                <Navigate to="/login" />
+              )
+            } />
+          </Routes>
+        </>
+      )}
+    </div>
   );
 }
 
