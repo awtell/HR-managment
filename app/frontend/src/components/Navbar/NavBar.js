@@ -16,25 +16,23 @@ const NavBar = ({ onLogout }) => {
   };
 
   return (
-    <>
-      <header id="header" className={`fixed-top d-flex align-items-center ${isScrolled ? 'header-scrolled' : 'transparent-bg'}`}>
-        <div className="container d-flex align-items-center">
-          <div className="logo me-auto">
-            <img src={logo} alt="Lumia Logo" className="img-fluid" />
-          </div>
-          <nav id="navbar" className={`navbar order-last order-lg-0 ${menuOpen ? 'navbar-mobile' : ''}`}>
-            <ul>
-              <li><a className="nav-link scrollto" href="#about">About Us</a></li>
-              <li><a className="nav-link scrollto active" href="#tables">Our Products</a></li>
-              <li><a className="nav-link scrollto" href="#services">Our Services</a></li>
-              <li><a className="nav-link scrollto" href="#portfolio">Contact Us</a></li>
-              <li><button className="btn logout" onClick={onLogout}>Logout</button></li>
-            </ul>
-            <i className={`bi ${menuOpen ? 'bi-x' : 'bi-list'} mobile-nav-toggle`} onClick={toggleMenu}></i>
-          </nav>
+    <header id="header" className={`fixed-top d-flex align-items-center ${isScrolled ? 'header-scrolled' : 'transparent-bg'}`}>
+      <div className="container d-flex align-items-center">
+        <div className="logo me-auto">
+          <img src={logo} alt="Lumia Logo" className="img-fluid" />
         </div>
-      </header>
-    </>
+        <nav id="navbar" className={`navbar order-last order-lg-0 ${menuOpen ? 'navbar-mobile' : ''}`}>
+          <ul>
+            <li><a className="nav-link scrollto" href="#about">About Us</a></li>
+            <li><a className="nav-link scrollto active" href="#tables">Our Products</a></li>
+            <li><a className="nav-link scrollto" href="#services">Our Services</a></li>
+            <li><a className="nav-link scrollto" href="#portfolio">Contact Us</a></li>
+            <li><button className="btn logout" onClick={onLogout}>Logout</button></li>
+          </ul>
+          <i className={`bi ${menuOpen ? 'bi-x' : 'bi-list'} mobile-nav-toggle`} onClick={toggleMenu}></i>
+        </nav>
+      </div>
+    </header>
   );
 };
 

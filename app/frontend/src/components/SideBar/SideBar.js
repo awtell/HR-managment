@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './SideBar.css';
 
-const Sidebar = ({ companies, onCompanyClick, selectedCompanies, toggleFormVisibility, sidebarMinimized, toggleSidebar }) => {
+const Sidebar = ({ companies, onCompanyClick, selectedCompanies, toggleFormVisibility, sidebarMinimized, toggleSidebar, unclickable, userRole, isHRLogin }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = (event) => {
@@ -17,14 +17,18 @@ const Sidebar = ({ companies, onCompanyClick, selectedCompanies, toggleFormVisib
     .sort((a, b) => a.localeCompare(b));
 
   return (
-    <aside className={`sidebar ${sidebarMinimized ? 'minimized' : ''}`}>
+    <aside className={`sidebar ${sidebarMinimized ? 'minimized' : ''} ${unclickable ? 'unclickable' : ''}`}>
       <button className="toggle-button" onClick={toggleSidebar}>
         {sidebarMinimized ? '>' : '<'}
       </button>
       {!sidebarMinimized && (
         <>
-          <button className="btn create-employee" onClick={() => toggleFormVisibility('admin')}>Create Admin</button>
-          <button className="btn create-employee" onClick={() => toggleFormVisibility('employee')}>Create Employee</button>
+          {(userRole !== 'RU' && userRole !== 'R' && !isHRLogin) && (
+            <>
+              <button className="btn create-employee" onClick={() => toggleFormVisibility('admin')} disabled={isHRLogin}>Create Admin</button>
+              <button className="btn create-employee" onClick={() => toggleFormVisibility('employee')} disabled={isHRLogin}>Create Employee</button>
+            </>
+          )}
           <h3>Companies</h3>
           <div className="search-container">
             <input

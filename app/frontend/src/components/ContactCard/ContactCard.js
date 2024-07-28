@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ContactCard.css';
 import im1 from '../../assets/images/logo.jpeg';
-import Footer from '../Footer/Footer';
+import Footer from '../Footer/Footer'; // Import the Footer component
 
 const ContactCard = React.forwardRef((props, ref) => {
   const { users, onCardClick, hasMoreUsers, onShowMore } = props;

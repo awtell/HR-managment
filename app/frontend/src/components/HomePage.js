@@ -7,7 +7,7 @@ import Sidebar from './SideBar/SideBar';
 import NavBar from './Navbar/NavBar';
 import LoadingAnimation from './Loading/LoadingAnimation';
 
-const HomePage = ({ onLogout }) => {
+const HomePage = ({ onLogout, userRole, sidebarMinimized, setSidebarMinimized, isHRLogin }) => {
   const [users, setUsers] = useState([]);
   const [visibleUsers, setVisibleUsers] = useState([]);
   const [formVisible, setFormVisible] = useState(false);
@@ -19,7 +19,6 @@ const HomePage = ({ onLogout }) => {
   const [hasMoreUsers, setHasMoreUsers] = useState(true);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [sidebarMinimized, setSidebarMinimized] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [formData, setFormData] = useState({
     fName: '',
@@ -168,6 +167,9 @@ const HomePage = ({ onLogout }) => {
         toggleFormVisibility={toggleFormVisibility}
         toggleSidebar={toggleSidebar}
         sidebarMinimized={sidebarMinimized}
+        unclickable={!isHRLogin} // Make sidebar unclickable if not HR login
+        userRole={userRole} // Pass the userRole prop
+        isHRLogin={isHRLogin} // Pass isHRLogin to disable buttons
       />
       <div className={`homepage-container ${sidebarMinimized ? 'sidebar-minimized' : 'sidebar-expanded'}`}>
         {loading ? (
