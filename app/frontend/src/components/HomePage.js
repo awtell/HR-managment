@@ -80,8 +80,10 @@ const HomePage = ({ onLogout, userRole, sidebarMinimized, setSidebarMinimized, i
   }, []);
 
   const handleCardClick = useCallback((user) => {
-    setSelectedUser(user);
-  }, []);
+    if (userRole !== 'R') {
+      setSelectedUser(user);
+    }
+  }, [userRole]);
 
   const handleCloseDetails = useCallback(() => {
     setSelectedUser(null);
@@ -176,7 +178,7 @@ const HomePage = ({ onLogout, userRole, sidebarMinimized, setSidebarMinimized, i
           <LoadingAnimation />
         ) : (
           <div className="contact-cards">
-            <ContactCard users={filteredUsers} onCardClick={handleCardClick} hasMoreUsers={hasMoreUsers} onShowMore={() => setShowMore(true)} />
+            <ContactCard users={filteredUsers} onCardClick={handleCardClick} hasMoreUsers={hasMoreUsers} onShowMore={() => setShowMore(true)} userRole={userRole} />
           </div>
         )}
         {selectedUser && (

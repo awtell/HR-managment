@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './ContactCard.css';
 import im1 from '../../assets/images/logo.jpeg';
-import Footer from '../Footer/Footer'; // Import the Footer component
+import Footer from '../Footer/Footer';
 
 const ContactCard = React.forwardRef((props, ref) => {
-  const { users, onCardClick, hasMoreUsers, onShowMore } = props;
-  const [isSidebarMinimized] = useState(false);
+  const { users, onCardClick, hasMoreUsers, onShowMore, userRole } = props;
+  const isSidebarMinimized = false;
 
   return (
     <section id='tables' className={`contact-card-container ${isSidebarMinimized ? 'sidebar-minimized' : ''}`}>
       <div className="container">
         <div className="row">
           {users.map((user, index) => (
-            <div className="card" key={index} onClick={() => onCardClick(user)}>
+            <div
+              className={`card ${userRole === 'R' ? 'unclickable' : ''}`}
+              key={index}
+              onClick={() => userRole !== 'R' && onCardClick(user)}
+            >
               <img src={im1} alt="Profile" className="profile-image" />
               <div className="card-body">
                 <h5 className="card-title">{user.fName} {user.lName}</h5>

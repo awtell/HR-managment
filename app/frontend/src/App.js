@@ -22,12 +22,27 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
-    const storedUserType = localStorage.getItem('user_type');
-    const storedUserRole = localStorage.getItem('user_role');
-    if (token && storedUserType && storedUserRole) {
-      setIsLoggedIn(true);
-      setUserType(storedUserType);
-      setUserRole(storedUserRole);
+    const fetchCurrentUser = async () => {
+      const response = await fetch('http://127.0.0.1:5000/current_user', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setIsLoggedIn(true);
+        setUserType(data.role === 'admin' ? 'admin' : 'user');
+        setUserRole(data.role);
+      } else {
+        setIsLoggedIn(false);
+        setUserType(null);
+        setUserRole(null);
+        setIsHRLogin(false);
+      }
+    };
+
+    if (token) {
+      fetchCurrentUser();
     } else {
       setIsLoggedIn(false);
       setUserType(null);

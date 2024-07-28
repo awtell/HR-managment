@@ -90,8 +90,9 @@ def login():
     user = Users.query.filter_by(email=email).first()
 
     if user and check_password_hash(user.password, password):
-        access_token = create_access_token(identity={'email': user.email})
-        return jsonify({"access_token": access_token, "user_type": "user"}), 200
+        access_token = create_access_token(
+            identity={'email': user.email, 'role': user.role})
+        return jsonify({"access_token": access_token, "user_type": "user", "role": user.role}), 200
     else:
         return jsonify({"error": "Invalid email or password"}), 401
 
@@ -108,8 +109,9 @@ def admin_login():
     admin = Admins.query.filter_by(email=email).first()
 
     if admin and check_password_hash(admin.password, password):
-        access_token = create_access_token(identity={'email': admin.email})
-        return jsonify({"access_token": access_token, "user_type": "admin"}), 200
+        access_token = create_access_token(
+            identity={'email': admin.email, 'role': 'admin'})
+        return jsonify({"access_token": access_token, "user_type": "admin", "role": "admin"}), 200
     else:
         return jsonify({"error": "Invalid email or password"}), 401
 
@@ -122,6 +124,25 @@ def create_admin():
     db.session.add(new_admin)
     db.session.commit()
     return admin_schema.jsonify(new_admin)
+
+
+@app.route('/current_user', methods=['GET'])
+@jwt_required()
+def get_current_user():
+    current_user_identity = get_jwt_identity()
+    email = current_user_identity.get('email')
+    role = current_user_identity.get('role')
+
+    user = Users.query.filter_by(email=email).first()
+
+    if user:
+        return jsonify({
+            "id": user.id,
+            "email": user.email,
+            "role": role
+        }), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
 
 
 @app.route('/user', methods=['GET', 'POST'])
