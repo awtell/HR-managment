@@ -29,13 +29,12 @@ const HRLogin = ({ onLogin }) => {
       password: password,
     };
     console.log('Submitting data:', userData);
-
     setLoading(true);
-
     try {
       const data = await hrLogin(userData);
       console.log('User logged in successfully:', data);
       onLogin(data.access_token, data.user_type, data.user_role, true);
+      window.location.href = '/home';
     } catch (error) {
       setError('Error logging in, please try again later');
       console.error('Error logging in:', error);
@@ -67,7 +66,9 @@ const HRLogin = ({ onLogin }) => {
             onChange={handlePasswordChange}
           />
           <button type="submit">Login</button>
-          <Link to="/login">Login as Admin</Link>
+          <div className="admin-link">
+            <Link to="/login">Login as Admin</Link>
+          </div>
         </form>
       )}
     </div>

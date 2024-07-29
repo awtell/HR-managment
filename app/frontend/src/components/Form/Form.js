@@ -112,8 +112,10 @@ const Form = ({ formVisible, toggleFormVisibility, formType }) => {
               </div>
             </>
           )}
-          <button type="submit" className="btn btn-primary">Submit</button>
-          <button type="button" className="btn btn-secondary" onClick={toggleFormVisibility}>Cancel</button>
+          <div className="btn-container">
+            <button type="submit" className="btn btn-primary">Submit</button>
+            <button type="button" className="btn btn-secondary" onClick={toggleFormVisibility}>Cancel</button>
+          </div>
         </form>
       </div>
     </div>

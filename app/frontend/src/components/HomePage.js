@@ -169,16 +169,22 @@ const HomePage = ({ onLogout, userRole, sidebarMinimized, setSidebarMinimized, i
         toggleFormVisibility={toggleFormVisibility}
         toggleSidebar={toggleSidebar}
         sidebarMinimized={sidebarMinimized}
-        unclickable={!isHRLogin} // Make sidebar unclickable if not HR login
-        userRole={userRole} // Pass the userRole prop
-        isHRLogin={isHRLogin} // Pass isHRLogin to disable buttons
+        unclickable={!isHRLogin}
+        userRole={userRole}
+        isHRLogin={isHRLogin}
       />
       <div className={`homepage-container ${sidebarMinimized ? 'sidebar-minimized' : 'sidebar-expanded'}`}>
         {loading ? (
           <LoadingAnimation />
         ) : (
           <div className="contact-cards">
-            <ContactCard users={filteredUsers} onCardClick={handleCardClick} hasMoreUsers={hasMoreUsers} onShowMore={() => setShowMore(true)} userRole={userRole} />
+            <ContactCard
+              users={filteredUsers}
+              onCardClick={handleCardClick}
+              hasMoreUsers={hasMoreUsers}
+              onShowMore={() => setShowMore(true)}
+              userRole={userRole}
+            />
           </div>
         )}
         {selectedUser && (
@@ -251,11 +257,26 @@ const HomePage = ({ onLogout, userRole, sidebarMinimized, setSidebarMinimized, i
               ) : (
                 <>
                   <h2>{selectedUser.fName} {selectedUser.lName}</h2>
-                  <p>Address: {selectedUser.address}</p>
-                  <p>Company: {selectedUser.company}</p>
-                  <p>City: {selectedUser.city}</p>
-                  <p>Country: {selectedUser.country}</p>
-                  <p>Phone: {selectedUser.phone}</p>
+                  <div>
+                    <label>Address:</label>
+                    <p>{selectedUser.address}</p>
+                  </div>
+                  <div>
+                    <label>Company:</label>
+                    <p>{selectedUser.company}</p>
+                  </div>
+                  <div>
+                    <label>City:</label>
+                    <p>{selectedUser.city}</p>
+                  </div>
+                  <div>
+                    <label>Country:</label>
+                    <p>{selectedUser.country}</p>
+                  </div>
+                  <div>
+                    <label>Phone:</label>
+                    <p>{selectedUser.phone}</p>
+                  </div>
                   <div className="user-actions">
                     <button className="btn edit" onClick={handleEdit}>Edit</button>
                     <button className="btn delete" onClick={() => confirmDeleteUser(selectedUser.id)}>Delete</button>

@@ -48,10 +48,20 @@
 .selected-user-details {
   position: relative;
   width: 100%;
+  max-width: 400px;
   padding: 20px;
   border: 1px solid #ddd;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.selected-user-details h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.selected-user-details div {
+  margin-bottom: 15px;
 }
 
 .user-actions {
@@ -60,13 +70,17 @@
   margin-top: 20px;
 }
 
+.user-actions button {
+  flex: 1;
+  margin: 0 5px;
+}
+
 .btn {
   padding: 10px 20px;
   border: none;
   background-color: #3498db;
   color: white;
   cursor: pointer;
-  margin: 5px;
 }
 
 .btn.delete {
@@ -226,3 +240,4 @@
   background-color: #ddd;
   cursor: not-allowed;
 }
+  

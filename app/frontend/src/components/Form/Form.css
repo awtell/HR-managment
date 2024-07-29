@@ -32,15 +32,20 @@ body .input-group {
 }
 
 body .input-group input,
-body .input-group select,
-body .input-group button {
+body .input-group select {
   width: 100%;
   box-sizing: border-box;
 }
 
 body .btn-container {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body .btn-container button {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -49,7 +54,7 @@ body .btn-container {
   }
 
   body .btn-container button {
-    width: 48%;
+    width: 100%;
   }
 }
 
