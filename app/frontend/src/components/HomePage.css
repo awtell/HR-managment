@@ -1,7 +1,6 @@
 .homepage-container {
   display: flex;
   flex-wrap: row;
-
   padding-top: 70px;
 }
 
@@ -31,7 +30,6 @@
   align-items: center;
   height: calc(100vh - 70px);
   overflow-y: auto;
-
 }
 
 .selected-user-details {
@@ -153,6 +151,19 @@
   width: 300px;
 }
 
+
+.show-more-button {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.show-more-button .btn:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .homepage-container {
     flex-direction: column;
@@ -193,16 +204,4 @@
   .btn {
     width: 100%;
   }
-}
-
-.show-more-button {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  padding: 20px;
-}
-
-.show-more-button .btn:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
 }
