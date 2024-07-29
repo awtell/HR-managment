@@ -1,7 +1,7 @@
 .homepage-container {
   display: flex;
-  flex-wrap: nowrap;
-  padding-top: 70px;
+  flex-wrap: row;
+  padding: 70px;
   transition: margin-left 0.3s ease;
 }
 
@@ -23,7 +23,7 @@
 .user-details {
   position: sticky;
   top: 70px;
-  flex: 1;
+  flex: 0.35;
   padding: 20px;
   border-left: 1px solid #ddd;
   display: flex;
@@ -31,19 +31,9 @@
   align-items: center;
   height: calc(100vh - 70px);
   overflow-y: auto;
+  background-color: black;
 }
 
-.user-details.mobile {
-  position: fixed;
-  top: 70px;
-  left: 0;
-  width: 100%;
-  height: calc(100vh - 70px);
-  background: white;
-  z-index: 1000;
-  padding: 20px;
-  overflow-y: auto;
-}
 
 .selected-user-details {
   position: relative;
@@ -53,15 +43,6 @@
   border: 1px solid #ddd;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.selected-user-details h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.selected-user-details div {
-  margin-bottom: 15px;
 }
 
 .user-actions {
@@ -103,19 +84,6 @@
 
 .homepage-container.user-selected .contact-cards {
   flex: 2;
-}
-
-.homepage-container.user-selected .user-details {
-  display: flex;
-}
-
-.contact-card-container .card {
-  width: calc(33.33% - 20px);
-  margin: 10px;
-}
-
-.homepage-container.user-selected .contact-card-container .card {
-  width: calc(50% - 20px);
 }
 
 .close-button {
@@ -197,7 +165,6 @@
 
   .homepage-container.sidebar-expanded .contact-cards {
     margin-left: 200px;
-
   }
 
   .contact-cards {
@@ -240,4 +207,3 @@
   background-color: #ddd;
   cursor: not-allowed;
 }
-  

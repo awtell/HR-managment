@@ -30,6 +30,7 @@ const HomePage = ({ onLogout, userRole, sidebarMinimized, setSidebarMinimized, i
     phone: '',
   });
   const [loading, setLoading] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
 
   const token = localStorage.getItem('access_token');
 
@@ -138,13 +139,18 @@ const HomePage = ({ onLogout, userRole, sidebarMinimized, setSidebarMinimized, i
 
   const handleEdit = () => {
     setFormData(selectedUser);
+    setCanEdit(selectedUser.role === 'RU');
     setIsEditing(true);
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-      const updatedUser = { ...selectedUser, ...formData };
+      const updatedUser = {
+        ...selectedUser,
+        ...formData,
+        role: canEdit ? 'RU' : 'R',
+      };
       await updateUser(selectedUser.id, updatedUser, token);
       setUsers((prevUsers) => prevUsers.map((user) => (user.id === selectedUser.id ? updatedUser : user)));
       setVisibleUsers((prevVisibleUsers) => prevVisibleUsers.map((user) => (user.id === selectedUser.id ? updatedUser : user)));
@@ -153,6 +159,10 @@ const HomePage = ({ onLogout, userRole, sidebarMinimized, setSidebarMinimized, i
     } catch (error) {
       console.error('Error updating user:', error);
     }
+  };
+
+  const handleCheckboxChange = (e) => {
+    setCanEdit(e.target.checked);
   };
 
   const toggleSidebar = () => {
@@ -248,6 +258,16 @@ const HomePage = ({ onLogout, userRole, sidebarMinimized, setSidebarMinimized, i
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     />
+                  </div>
+                  <div>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={canEdit}
+                        onChange={handleCheckboxChange}
+                      />
+                      Can Edit
+                    </label>
                   </div>
                   <div className="user-actions">
                     <button className="btn" type="submit">Save</button>
