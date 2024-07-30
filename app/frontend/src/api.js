@@ -35,16 +35,15 @@ const fetchUsers = async (limit) => {
   }
 };
 
-const postUser = async (user, userType = 'employee') => {
+const postUser = async (formData, userType = 'employee') => {
   const token = localStorage.getItem('access_token');
   try {
     const response = await fetch(`http://127.0.0.1:5000/${userType === 'admin' ? 'admin' : 'user'}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(user)
+      body: formData // FormData is sent directly
     });
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -132,9 +131,35 @@ const hrLogin = async (userData) => {
       console.error('Error logging in:', errorData);
       throw new Error(errorData.error || 'Network response was not ok');
     }
-    return await response.json();
+    const data = await response.json();
+    localStorage.setItem('access_token', data.access_token);
+    return data;
   } catch (error) {
     console.error('HR login error:', error);
+    throw error;
+  }
+};
+
+const uploadImage = async (id, imageFile) => {
+  const formData = new FormData();
+  formData.append('id', id);
+  formData.append('image', imageFile);
+
+  try {
+    const response = await fetch('http://127.0.0.1:5000/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error uploading image:', errorData);
+      throw new Error(errorData.error || 'Network response was not ok');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Image upload error:', error);
     throw error;
   }
 };
@@ -147,4 +172,5 @@ export {
   deleteUser,
   updateUser,
   adminLogin,
+  uploadImage
 };

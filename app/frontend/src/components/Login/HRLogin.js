@@ -35,6 +35,7 @@ const HRLogin = ({ onLogin }) => {
       console.log('User logged in successfully:', data);
       onLogin(data.access_token, data.user_type, data.user_role, true);
       window.location.href = '/home';
+      console.log('User ID:', data.id);
     } catch (error) {
       setError('Error logging in, please try again later');
       console.error('Error logging in:', error);

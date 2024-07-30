@@ -15,6 +15,7 @@ const Form = ({ formVisible, toggleFormVisibility, formType }) => {
     color: '#000000',
     phone: '',
     role: '',
+    image: './assets/images/profile.png',
   });
 
   const [canEdit, setCanEdit] = useState(false);
@@ -38,13 +39,32 @@ const Form = ({ formVisible, toggleFormVisibility, formType }) => {
       role: canEdit ? 'RU' : 'R',
     };
 
+    // Create FormData object to handle file uploads
+    const formDataToSend = new FormData();
+    for (const key in updatedFormData) {
+      formDataToSend.append(key, updatedFormData[key]);
+    }
+
+    // Append image file if it exists
+    if (formData.image) {
+      formDataToSend.append('image', formData.image);
+    }
+
     try {
-      await postUser(updatedFormData, formType);
+      await postUser(formDataToSend, formType); // Send FormData instead of JSON
       alert(`${formType === 'admin' ? 'Admin' : 'Employee'} created successfully`);
       toggleFormVisibility();
     } catch (error) {
       console.error(`Error creating ${formType}:`, error);
     }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prevData) => ({
+      ...prevData,
+      image: file,
+    }));
   };
 
   const [countries, setCountries] = useState([]);
@@ -109,6 +129,7 @@ const Form = ({ formVisible, toggleFormVisibility, formType }) => {
                   <input type="checkbox" checked={canEdit} onChange={handleCheckboxChange} />
                   Can Edit
                 </label>
+                <input type="file" className="form-control" name="image" onChange={handleImageChange} required />
               </div>
             </>
           )}

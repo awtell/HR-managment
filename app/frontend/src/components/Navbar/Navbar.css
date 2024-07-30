@@ -1,3 +1,5 @@
+/* Navbar.css */
+
 /* General Button Styles */
 .btn {
   padding: 10px 20px;
@@ -6,18 +8,18 @@
   color: white;
   cursor: pointer;
   margin: 5px;
-  border-radius: 5px; /* Rounded corners */
-  font-size: 16px; /* Increase font size */
-  font-weight: bold; /* Make text bold */
-  transition: background-color 0.3s; /* Smooth background color transition */
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
 }
 
 .btn.logout {
   background-color: #5EAEE3;
-  margin: 20px auto 10px auto; /* Increase top margin for more space above the button */
-  display: block; /* Ensure block display for full-width */
-  text-align: center; /* Center text */
-  border-radius: 5px; /* Ensure rounded corners on both ends */
+  margin: 20px auto 10px auto;
+  display: block;
+  text-align: center;
+  border-radius: 5px;
 }
 
 .btn.logout:hover {
@@ -28,17 +30,16 @@
   background-color: #3498db;
 }
 
-/* Specific styles for the navbar */
 @media (min-width: 992px) {
   .btn.logout {
-    width: auto; /* Let the button take its natural width on larger screens */
-    margin: 0 0 0 30px; /* Add left margin on larger screens */
+    width: auto;
+    margin: 0 0 0 30px;
   }
 }
 
 @media (max-width: 991px) {
   .btn.logout {
-    width: calc(100% - 40px); /* Adjust width to fit container properly on smaller screens */
+    width: calc(100% - 40px);
   }
 }
 
@@ -50,6 +51,11 @@
   background: white;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.2);
   position: fixed;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
 }
 
 .transparent-bg {
@@ -64,6 +70,48 @@
 
 #header .logo img {
   max-height: 40px;
+}
+
+#header .user-info {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+#header .profile-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-left: 10px;
+}
+
+#header .user-name {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  #header .user-name {
+    display: inline;
+  }
+}
+
+@media (max-width: 767px) {
+  #header .container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  #header .logo {
+    flex: 1;
+  }
+
+  #header .navbar {
+    flex: 2;
+  }
+
+  #header .user-info {
+    display: none;
+  }
 }
 
 .navbar {
@@ -268,4 +316,45 @@
 
 .navbar-mobile .dropdown>.dropdown-active {
   display: block;
+}
+
+/* Modal Styles */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }

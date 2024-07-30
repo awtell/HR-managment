@@ -5,8 +5,11 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 import logging
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
+UPLOAD_FOLDER = '/Users/charbel/Desktop/intern/test/app/frontend/src/assets/images'
 
 # Configure CORS
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
@@ -14,6 +17,7 @@ CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:charbel1@localhost/inetrn'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
@@ -36,8 +40,9 @@ class Users(db.Model):
     password = db.Column(db.String(255))
     email = db.Column(db.String(100), unique=True, nullable=False)
     role = db.Column(db.String(50), default='user')
+    image = db.Column(db.String(255), nullable=True)
 
-    def __init__(self, fName, lName, company, address, city, country, color, phone, password, email, role='user'):
+    def __init__(self, fName, lName, company, address, city, country, color, phone, password, email, role='user', image=None):
         self.fName = fName
         self.lName = lName
         self.company = company
@@ -49,6 +54,7 @@ class Users(db.Model):
         self.password = generate_password_hash(password)
         self.email = email
         self.role = role
+        self.image = image
 
 
 class Admins(db.Model):
@@ -64,7 +70,7 @@ class Admins(db.Model):
 class UsersSchema(ma.Schema):
     class Meta:
         fields = ('id', 'fName', 'lName', 'company', 'address',
-                  'city', 'country', 'color', 'phone', 'password', 'email', 'role')
+                  'city', 'country', 'color', 'phone', 'password', 'email', 'role', 'image')
 
 
 class AdminsSchema(ma.Schema):
@@ -139,7 +145,10 @@ def get_current_user():
         return jsonify({
             "id": user.id,
             "email": user.email,
-            "role": role
+            "fName": user.fName,
+            "lName": user.lName,
+            "role": role,
+            "image": user.image
         }), 200
     else:
         return jsonify({"error": "User not found"}), 404
@@ -151,7 +160,13 @@ def handle_user():
     current_user = get_jwt_identity()
     limit = request.args.get('limit', default=10, type=int)
     if request.method == 'POST':
-        data = request.json
+        if 'image' in request.files:
+            file = request.files['image']
+            data = request.form.to_dict()
+        else:
+            data = request.json
+            file = None
+        
         app.logger.debug(f"Incoming data: {data}")
 
         required_fields = ['fName', 'lName', 'company', 'address',
@@ -167,11 +182,17 @@ def handle_user():
                 fName=data['fName'], lName=data['lName'], company=data['company'],
                 address=data['address'], city=data['city'], country=data['country'],
                 color=data['color'], phone=data['phone'], password=data['password'],
-                email=data['email'], role=data['role']
+                email=data['email'], role=data['role'], image=None
             )
 
             db.session.add(new_user)
             db.session.commit()
+
+            if file:
+                filename = f"{new_user.id}.png"
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                new_user.image = filename
+                db.session.commit()
 
             return user_schema.jsonify(new_user), 201
         except Exception as e:
@@ -211,6 +232,22 @@ def handle_user_id(id):
             return user_schema.jsonify(user)
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    id = request.form['id']
+    filename = f"{id}.png"
+    file.save(os.path.join(UPLOAD_FOLDER, filename))
+
+    return jsonify({'success': 'File uploaded successfully'}), 200
 
 
 if __name__ == '__main__':

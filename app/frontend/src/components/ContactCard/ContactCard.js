@@ -1,23 +1,35 @@
 import React from 'react';
 import './ContactCard.css';
-import im1 from '../../assets/images/logo.jpeg';
 import Footer from '../Footer/Footer';
+
+// Import all images dynamically
+const importAll = (r) => {
+  let images = {};
+  r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
+  return images;
+}
+
+const images = importAll(require.context('../../assets/images', false, /\.(png|jpe?g|svg)$/));
 
 const ContactCard = React.forwardRef((props, ref) => {
   const { users, onCardClick, hasMoreUsers, onShowMore, userRole } = props;
   const isSidebarMinimized = false;
 
   return (
-    <section id='tables' className={`contact-card-container ${isSidebarMinimized ? 'sidebar-minimized' : ''}`}>
+    <section id="tables" className={`contact-card-container ${isSidebarMinimized ? 'sidebar-minimized' : ''}`}>
       <div className="container">
         <div className="row">
           {users.map((user, index) => (
-            <div 
-              className={`card ${userRole === 'R' ? 'unclickable' : ''}`} 
-              key={index} 
+            <div
+              className={`card ${userRole === 'R' ? 'unclickable' : ''}`}
+              key={index}
               onClick={() => userRole !== 'R' && onCardClick(user)}
             >
-              <img src={im1} alt="Profile" className="profile-image" />
+              <img
+                src={images[`${user.id}.png`]}
+                alt="Profile"
+                className="profile-image"
+              />
               <div className="card-body">
                 <h5 className="card-title">{user.fName} {user.lName}</h5>
                 <p className="card-text">{user.company}</p>

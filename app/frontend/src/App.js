@@ -5,7 +5,7 @@ import Login from './components/Login/Login';
 import HomePage from './components/HomePage';
 import NavBar from './components/Navbar/NavBar';
 import LoadingAnimation from './components/Loading/LoadingAnimation';
-import './App.css'; // Ensure you have the CSS file imported
+import './App.css';
 import { fetchCurrentUser } from './api';
 
 function App() {
@@ -87,7 +87,7 @@ function App() {
   }, [isHRLogin]);
 
   if (isLoggedIn === null) {
-    return <div>Loading...</div>;
+    return <LoadingAnimation />;
   }
 
   const isAdmin = userType === 'admin';
