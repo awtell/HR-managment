@@ -78,9 +78,6 @@ This project is a system used by HR companies to manage their acquaintances from
 1. Ensure both the backend and frontend servers are running.
 2. Open your browser and navigate to `http://localhost:3000` to use the application.
 
-## Contributing
-
-Please fork this repository and create a pull request with your changes.
 
 ## License
 
